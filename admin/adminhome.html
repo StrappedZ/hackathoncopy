@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      min-width: 100vw;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(120deg, #e9f5db 0%, #a7c7e7 50%, #f7cac9 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .panel-container {
+      display: grid;
+      grid-template-columns: repeat(2, 180px);
+      grid-template-rows: repeat(3, 120px);
+      gap: 32px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 32px;
+      box-shadow: 0 8px 60px 0 #a7c7e755;
+      padding: 40px 48px;
+    }
+    .panel-btn {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #77d9ec 60%, #d291bc 100%);
+      color: #222;
+      border: none;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #3332;
+      cursor: pointer;
+      transition: 
+        box-shadow 0.3s cubic-bezier(.4,2,.6,1),
+        transform 0.13s cubic-bezier(.4,2,.6,1);
+      outline: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 8px #0002;
+      background: linear-gradient(135deg, #d291bc 70%, #77d9ec 100%);
+    }
+    .panel-btn:first-child {
+      background: linear-gradient(135deg, #ffe066 60%, #77d9ec 100%);
+      color: #1b2330;
+    }
+    .panel-btn:first-child:active {
+      background: linear-gradient(135deg, #77d9ec 60%, #ffe066 100%);
+    }
+    /* Add a soft glow to the first button */
+    .panel-btn:first-child {
+      box-shadow: 0 0 22px #ffe06688, 0 4px 24px #3332;
+    }
+    @media (max-width: 600px) {
+      .panel-container {
+        grid-template-columns: 1fr 1fr;
+        padding: 20px 4vw;
+        gap: 14px;
+      }
+      .panel-btn {
+        font-size: 1.02rem;
+        min-width: 0;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="panel-container">
+    <button class="panel-btn" onclick="window.location.href='accounts.html'">Account Control</button>
+    <button class="panel-btn" onclick="window.location.href='notifications.html'">Notifications</button>
+    <button class="panel-btn" onclick="window.location.href='homedisplays.html'">HomeDisplays</button>
+    <button class="panel-btn"onclick="window.location.href='adminpnl.html'">Tite ni Lee</button>
+    <button class="panel-btn"onclick="window.location.href='advertisehome.html'">Advertise</button>
+    <button class="panel-btn">Button 6</button>
+  </div>
+</body>
+</html>

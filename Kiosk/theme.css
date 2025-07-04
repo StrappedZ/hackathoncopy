@@ -1,0 +1,82 @@
+:root {
+  --background: #87CEEB;
+  --backbuttons: linear-gradient(135deg, #87ceeb 0%, #2196f3 60%, #005fa3 100%);
+  --forwardbuttons: linear-gradient(135deg, #21e6f3 0%, #2196f3 60%, #005fa3 100%);
+}
+
+body {
+  background-color: var(--bg);
+}
+
+/* Back Chevron Button */
+.back-chevron {
+  position: fixed;
+  left: 2vw;
+  bottom: 2vh;
+  width: 3.2em;
+  height: 3.2em;
+  background: var(--backbuttons);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 16px #0002, 0 1.5px 5px #2196f330;
+  cursor: pointer;
+  z-index: 10;
+  transition: box-shadow 0.15s, background 0.15s;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+.back-chevron:hover {
+  background: #f0f5fa;
+  box-shadow: 0 4px 24px #2196f355;
+}
+.back-chevron .back-icon {
+  width: 2em;
+  height: 2em;
+  display: block;
+}
+
+/* Forward Chevron Button */
+.forward-chevron {
+  position: fixed;
+  right: 2vw;
+  bottom: 2vh;
+  width: 3.2em;
+  height: 3.2em;
+  background: var(--forwardbuttons);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 16px #0002, 0 1.5px 5px #2196f330;
+  cursor: pointer;
+  z-index: 10;
+  transition: box-shadow 0.15s, background 0.15s;
+  border: none;
+  outline: none;
+  padding: 0;
+}
+.forward-chevron:hover {
+  background: #f0f5fa;
+  box-shadow: 0 4px 24px #2196f355;
+}
+.forward-chevron .forward-icon {
+  width: 2em;
+  height: 2em;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .back-chevron,
+  .forward-chevron {
+    width: 5em;
+    height: 5em;
+  }
+  .back-chevron .back-icon,
+  .forward-chevron .forward-icon {
+    width: 3.5em;
+    height: 3.5em;
+  }
+}

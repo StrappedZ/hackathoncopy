@@ -1,0 +1,99 @@
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      font-family: 'Inder', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 90%;
+      background: #fff;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin: 0;
+      letter-spacing: 0.1em;
+      text-align: center;
+      color: #000;
+    }
+
+    input {
+      width: 80%;
+      padding: 20px;
+      font-size: 24px;
+      border-radius: 15px;
+      border: 1px solid #ddd;
+    }
+
+    .forgot {
+      font-size: 18px;
+      color: #F21515;
+      cursor: pointer;
+      text-align: right;
+      width: 80%;
+    }
+
+    .login-button {
+      background: #748AE5;
+      color: #fff;
+      font-size: 24px;
+      border: none;
+      padding: 20px 60px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .login-button:hover {
+      background: #5c6fba;
+    }
+
+    .back-chevron {
+      position: fixed;
+      left: 2vw;
+      bottom: 2vh;
+      width: 3.2em;
+      height: 3.2em;
+      background: var(--backbuttons);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 16px #0002, 0 1.5px 5px #2196f330;
+      cursor: pointer;
+      z-index: 10;
+      transition: box-shadow 0.15s, background 0.15s;
+      border: none;
+      outline: none;
+      padding: 0;
+    }
+    .back-chevron:hover {
+      background: #f0f5fa;
+      box-shadow: 0 4px 24px #2196f355;
+    }
+    .back-chevron .back-icon {
+      width: 2em;
+      height: 2em;
+      display: block;
+    }
+
+    @media(max-width: 768px) {
+      h1 { font-size: 32px; }
+      input { font-size: 18px; }
+      .login-button { font-size: 18px; padding: 15px 40px; }
+      .back-chevron { width: 5em; height: 5em; }
+      .back-chevron .back-icon { width: 3.5em; height: 3.5em; }
+    }

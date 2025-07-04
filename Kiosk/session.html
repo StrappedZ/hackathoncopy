@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Enroll a Fingerprint</title>
+  <style>
+    :root {
+      --background: #87CEEB;
+      --enroll-btn: linear-gradient(135deg, #21e6f3 0%, #2196f3 60%, #005fa3 100%);
+      --enroll-btn-hover: linear-gradient(135deg, #a3e7ff 0%, #2196f3 80%, #005fa3 100%);
+      --backbuttons: linear-gradient(135deg, #87ceeb 0%, #2196f3 60%, #005fa3 100%);
+      --container-bg: #f5fbffcc;
+      --instructions-bg: #fff;
+      --instructions-border: #2196f3;
+    }
+
+    body {
+      background: var(--background);
+      font-family: 'Lilita One', 'IM FELL Great Primer', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: 7vh auto 0 auto;
+      background: var(--container-bg);
+      border-radius: 16px;
+      box-shadow: 0 2px 24px #2196f355;
+      padding: 2.5em 2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      margin-bottom: 1.2em;
+      font-size: 2.1em;
+      color: #005fa3;
+      letter-spacing: 1px;
+    }
+
+    #instructions {
+      background: var(--instructions-bg);
+      border: 2px solid var(--instructions-border);
+      border-radius: 10px;
+      padding: 1.2em 1em;
+      color: #005fa3;
+      font-size: 1.25em;
+      text-align: center;
+      margin-bottom: 2em;
+      min-width: 230px;
+      min-height: 3em;
+      box-sizing: border-box;
+      transition: border 0.2s, box-shadow 0.2s;
+      box-shadow: 0 1px 10px #2196f322;
+    }
+
+    #startEnroll, #backBtn {
+      display: block;
+      width: 90%;
+      max-width: 350px;
+      margin: 0.5em auto;
+      padding: 0.9em 0;
+      font-size: 1.15em;
+      border: none;
+      border-radius: 30px;
+      background: var(--enroll-btn);
+      color: #fff;
+      font-family: inherit;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 14px #2196f333;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    #startEnroll:hover, #backBtn:hover {
+      background: var(--enroll-btn-hover);
+      box-shadow: 0 4px 22px #2196f355;
+    }
+
+    #backBtn {
+      background: var(--backbuttons);
+      margin-top: 0.7em;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        max-width: 98vw;
+        padding: 1.2em 0.5em;
+      }
+      h2 {
+        font-size: 1.4em;
+      }
+      #instructions {
+        font-size: 1em;
+        padding: 0.7em 0.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Enroll a Fingerprint</h2>
+    <div id="instructions">Loading instructions...</div>
+    <button id="startEnroll">Start Enrollment</button>
+    <button id="backBtn">Back</button>
+  </div>
+  <script>
+const ESP32_IP = "192.168.100.204";
+
+function setInstructions(msg) {
+  document.getElementById("instructions").innerText = msg;
+}
+
+function enrollSequence(slotId) {
+  let timeouts = [];
+  setInstructions("Enrolling now...");
+  timeouts.push(setTimeout(() => setInstructions("Place your finger on the sensor"), 1000));
+  timeouts.push(setTimeout(() => setInstructions("Remove your finger"), 6000));
+  timeouts.push(setTimeout(() => setInstructions("Place the same finger again"), 8000));
+  timeouts.push(setTimeout(() => setInstructions("Waiting for result..."), 13000));
+
+  // Start the enroll request at the same time as showing prompts
+  fetch(`http://${ESP32_IP}/enroll?id=${slotId}`, { method: "POST" })
+    .then(response => response.json()
+      .then(data => ({status: response.status, body: data})))
+    .then(({status, body}) => {
+      // Clear all pending timeouts to prevent prompt override
+      timeouts.forEach(to => clearTimeout(to));
+      if (status !== 200) {
+        setInstructions(`Error (${body.error_code || status}): ${body.error || "Unknown error"}`);
+        return;
+      }
+      setInstructions(body.result || body.error || "Unknown response");
+    })
+    .catch(() => {
+      timeouts.forEach(to => clearTimeout(to));
+      setInstructions("Could not contact device.");
+    });
+}
+
+document.getElementById("startEnroll").addEventListener("click", function() {
+  setInstructions("Checking available slots...");
+  fetch(`http://${ESP32_IP}/free_slots`)
+    .then(res => res.json().then(data => ({status: res.status, body: data})))
+    .then(({status, body}) => {
+      if (status !== 200) {
+        setInstructions(`Error (${body.error_code || status}): ${body.error || "Unknown error"}`);
+        return;
+      }
+      if (body.free && body.free.length > 0) {
+        enrollSequence(body.free[0]);
+      } else {
+        setInstructions("No available slots!");
+      }
+    })
+    .catch(() => {
+      setInstructions("Could not check slots.");
+    });
+});
+document.getElementById("backBtn").onclick = () => window.location.href = "screen2.html";
+
+// On load, show static instructions
+setInstructions(`Press "Start Enrollment" to use the first available slot.\n\nEnrollment steps:\n1. Place your finger on the sensor\n2. Remove your finger when prompted\n3. Place the same finger again\n4. Wait for result`);
+  </script>
+</body>
+</html>

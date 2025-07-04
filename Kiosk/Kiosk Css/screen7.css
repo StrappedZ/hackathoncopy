@@ -1,0 +1,63 @@
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'IM FELL Great Primer', serif;
+      background-color: var(--background);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      max-width: 90vw;
+      width: 100%;
+      text-align: center;
+      padding: 2vh 5vw;
+      box-sizing: border-box;
+    }
+    .header {
+      font-family: 'Lilita One', cursive;
+      font-size: 3vw;
+      margin-bottom: 4vh;
+      letter-spacing: 0.1em;
+      color: #000;
+    }
+    .field {
+      font-size: 2vw;
+      margin: 2vh auto;
+      background: #fff;
+      border-radius: 15px;
+      padding: 2vh 2vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 600px;
+    }
+    .edit-icon {
+      cursor: pointer;
+      font-size: 2vw;
+      margin-left: 2vw;
+      color: #333;
+    }
+    .chevron {
+      position: fixed;
+      font-size: 3vw;
+      cursor: pointer;
+      color: #333;
+    }
+    .chevron-forward {
+      right: 2vw;
+      bottom: 2vh;
+      transform: rotate(180deg);
+    }
+    .chevron-back {
+      left: 2vw;
+      bottom: 2vh;
+    }
+    @media(max-width:768px) {
+      .header { font-size: 6vw; }
+      .field { font-size: 4vw; }
+      .edit-icon { font-size: 6vw; }
+      .chevron { font-size: 8vw; }
+    }

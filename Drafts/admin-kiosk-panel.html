@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Panel - ID and Product Image Upload</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="admin-kiosk.css">
+    
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Left Panel: ID Verification -->
+    <div class="panel">
+      <h2>ID Verification</h2>
+      <div class="section">
+        <label for="idImage">Upload ID Image</label>
+        <input type="file" id="idImage" accept="image/*">
+        <img id="idPreview" style="display:none;" alt="ID Preview" />
+        <div class="note">
+          After uploading, the extracted information will appear below.<br>
+          <b>Detected Card Type:</b> <span id="cardTypeDisplay">---</span>
+        </div>
+        <label for="extractedText">Extracted Info (Review & Edit)</label>
+        <textarea id="extractedText" rows="10" placeholder="Extracted info will appear here..."></textarea>
+        <details id="rawOCRDetails" style="display:none;">
+          <summary>Show Raw OCR Output</summary>
+          <pre id="rawOCR"></pre>
+        </details>
+        <button id="verifyBtn">Verify Account</button>
+      </div>
+    </div>
+    <!-- Right Panel: Account/Products -->
+    <div class="panel">
+      <!-- Account Number Input always at top -->
+      <div class="account-input-row">
+        <label for="accountNumberTop">Enter Account Number</label>
+        <input type="text" id="accountNumberTop" placeholder="Account number">
+        <button id="accountNumberEnterBtn" type="button">Enter</button>
+      </div>
+      <!-- Product Info (basic) -->
+      <div class="product-info" id="productInfoBox">
+        <div class="product-info-row">
+          <span class="product-info-label">Account Number:</span>
+          <span class="product-info-value" id="productAccountNumber">---</span>
+        </div>
+        <div class="product-info-row">
+          <span class="product-info-label">User's Name:</span>
+          <span class="product-info-value" id="userNameDisplay">---</span>
+        </div>
+      </div>
+      <!-- All Products Section -->
+      <div class="product-list-section">
+        <div class="section-title">All Products for This Account</div>
+        <div id="allProductsList" style="margin-top:1em;"></div>
+      </div>
+
+<!-- Edit Product Modal -->
+<div id="editProductModal" style="display:none;position:fixed;z-index:1000;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.28);align-items:center;justify-content:center;">
+  <div style="background:#fff;padding:22px 24px 20px 24px;border-radius:12px;max-width:350px;width:95vw;box-shadow:0 8px 48px #0002;position:relative;">
+    <button id="editModalClose" style="position:absolute;right:8px;top:8px;font-size:1.4em;border:none;background:none;cursor:pointer;">×</button>
+    <h3 style="margin-top:0;">Edit Product</h3>
+    <input type="hidden" id="editProductKey">
+    <label>Product Name</label>
+    <input type="text" id="editProductName" class="admin-edit-input" style="width:100%;margin-bottom:10px;">
+    <label>Description</label>
+    <input type="text" id="editProductDesc" class="admin-edit-input" style="width:100%;margin-bottom:10px;">
+    <label>Category</label>
+    <select id="editProductCategory" style="width:100%;margin-bottom:10px;"></select>
+    <label>Subcategory</label>
+    <select id="editProductSubcategory" style="width:100%;margin-bottom:10px;"></select>
+    <label>Image</label><br>
+    <img id="editProductPreview" style="max-width:120px;max-height:80px;border-radius:7px;border:1px solid #ccc;margin-bottom:5px;display:block;">
+    <input type="file" id="editProductImage" accept="image/*" style="margin-bottom:12px;">
+    <button id="editProductSaveBtn" style="width:100%;margin-top:8px;background:#2196f3;color:#fff;border:none;border-radius:6px;padding:8px;font-weight:600;">Save Changes</button>
+  </div>
+</div>
+<style>
+  .admin-edit-input {padding:6px 8px;font-size:1em;border:1px solid #bbb;border-radius:5px;}
+</style>
+
+      <!-- Add New Product Section -->
+      <div class="add-product-section">
+        <div class="section-title">Add New Product</div>
+        <label for="productNameInput">Product Name</label>
+        <input type="text" id="productNameInput" placeholder="Enter product name">
+        <label for="productDescInput">Product Description</label>
+        <input type="text" id="productDescInput" placeholder="Enter product description">
+        <label for="productCategoryInput">Category</label>
+        <select id="productCategoryInput">
+          <option value="">Select Category</option>
+          <option value="Food">Food</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Accessories">Accessories</option>
+          <option value="Gadgets">Gadgets</option>
+          <option value="Beauty">Beauty</option>
+          <option value="Home">Home</option>
+          <option value="Other">Other</option>
+        </select>
+        <label for="productSubcategoryInput">Subcategory</label>
+        <select id="productSubcategoryInput">
+          <option value="">Select Subcategory</option>
+        </select>
+        <label for="productImage">Upload Product Image</label>
+        <input type="file" id="productImage" accept="image/*">
+        <img id="productPreview" style="display:none;" alt="Product Preview" />
+        <button id="submitProductBtn" type="button">Submit Product</button>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script>
+    // Firebase Init
+    const firebaseConfig = {
+        apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+        authDomain: "iot-web-58054.firebaseapp.com",
+        databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "iot-web-58054",
+        storageBucket: "iot-web-58054.firebasestorage.app",
+        messagingSenderId: "949884902967",
+        appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+        measurementId: "G-5C79490N66"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const storage = firebase.storage();
+
+    // Minimal extractIdFields for brevity
+    function extractIdFields(text) {
+      return { summary: text, cardType: 'Unknown' };
+    }
+
+    let currentAcctNum = ""; // Will update as user switches account
+
+function renderAllProducts(acctNum) {
+  const listDiv = document.getElementById('allProductsList');
+  listDiv.innerHTML = "Loading...";
+  if (!acctNum) { listDiv.innerHTML = ""; return; }
+  database.ref('products/' + acctNum).once('value', function(snapshot) {
+    if (snapshot.exists()) {
+      const products = snapshot.val();
+      let html = `<ul style="padding-left:1.2em;">`;
+      Object.entries(products).forEach(([prodId, prod]) => {
+        html += `<li>
+          <b>${prod.productName || "(No Name)"}:</b> ${prod.productDesc || ""}<br>
+          <b>Category:</b> ${prod.productCategory || ""} <b>Subcategory:</b> ${prod.productSubcategory || ""}<br>
+          ${prod.imageUrl ? `<img src="${prod.imageUrl}" style="max-width:120px;max-height:90px;border-radius:8px;border:1px solid #ccc;">` : ""}
+          <br><small>Added: ${prod.addedAt ? new Date(prod.addedAt).toLocaleString() : ""}</small>
+          <br>
+          <button type="button" class="editProductBtn" data-key="${prodId}" style="margin-top:4px;margin-bottom:5px;background:#ffb300;color:#212121;border:none;border-radius:4px;padding:3px 10px;cursor:pointer;">Edit</button>
+        </li><hr>`;
+      });
+      html += `</ul>`;
+      listDiv.innerHTML = html;
+      // Add event listeners to all edit buttons:
+      Array.from(document.getElementsByClassName('editProductBtn')).forEach(btn => {
+        btn.onclick = function() { openEditProductModal(this.getAttribute('data-key'), acctNum); };
+      });
+    } else {
+      listDiv.innerHTML = "<i>No products for this account.</i>";
+    }
+  });
+}
+
+// 2. Modal logic:
+function populateEditCategorySubcategory(selectedCat, selectedSubcat) {
+  const catSel = document.getElementById('editProductCategory');
+  const subcatSel = document.getElementById('editProductSubcategory');
+  catSel.innerHTML = `<option value="">Select Category</option>`;
+  Object.keys(subcategories).forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.textContent = cat;
+    if (cat === selectedCat) opt.selected = true;
+    catSel.appendChild(opt);
+  });
+  subcatSel.innerHTML = `<option value="">Select Subcategory</option>`;
+  if (selectedCat && subcategories[selectedCat]) {
+    subcategories[selectedCat].forEach(sub => {
+      const opt = document.createElement('option');
+      opt.value = sub;
+      opt.textContent = sub;
+      if (sub === selectedSubcat) opt.selected = true;
+      subcatSel.appendChild(opt);
+    });
+  }
+  catSel.onchange = () => {
+    const newCat = catSel.value;
+    subcatSel.innerHTML = `<option value="">Select Subcategory</option>`;
+    if (newCat && subcategories[newCat]) {
+      subcategories[newCat].forEach(sub => {
+        const opt = document.createElement('option');
+        opt.value = sub;
+        opt.textContent = sub;
+        subcatSel.appendChild(opt);
+      });
+    }
+  };
+}
+
+function openEditProductModal(prodKey, acctNum) {
+  const modal = document.getElementById('editProductModal');
+  modal.style.display = 'flex';
+  database.ref('products/' + acctNum + '/' + prodKey).once('value').then(snap => {
+    const prod = snap.val();
+    document.getElementById('editProductKey').value = prodKey;
+    document.getElementById('editProductName').value = prod.productName || "";
+    document.getElementById('editProductDesc').value = prod.productDesc || "";
+    document.getElementById('editProductPreview').src = prod.imageUrl || "";
+    document.getElementById('editProductPreview').style.display = prod.imageUrl ? "block" : "none";
+    populateEditCategorySubcategory(prod.productCategory, prod.productSubcategory);
+    document.getElementById('editProductImage').value = '';
+  });
+}
+document.getElementById('editModalClose').onclick = function() {
+  document.getElementById('editProductModal').style.display = 'none';
+};
+document.getElementById('editProductImage').addEventListener('change', function(e) {
+  const img = document.getElementById('editProductPreview');
+  const file = e.target.files[0];
+  if (file) {
+    img.src = URL.createObjectURL(file);
+    img.style.display = 'block';
+  }
+});
+document.getElementById('editProductSaveBtn').onclick = function() {
+  const prodKey = document.getElementById('editProductKey').value;
+  const name = document.getElementById('editProductName').value.trim();
+  const desc = document.getElementById('editProductDesc').value.trim();
+  const cat = document.getElementById('editProductCategory').value;
+  const subcat = document.getElementById('editProductSubcategory').value;
+  const file = document.getElementById('editProductImage').files[0];
+
+  if (!name) { Swal.fire({icon:'warning',title:'Missing Name',text:'Please enter the product name.'}); return; }
+  if (!cat) { Swal.fire({icon:'warning',title:'Missing Category',text:'Please select a category.'}); return; }
+  if (!subcat) { Swal.fire({icon:'warning',title:'Missing Subcategory',text:'Please select a subcategory.'}); return; }
+
+  const prodRef = database.ref('products/' + currentAcctNum + '/' + prodKey);
+
+  function updateProduct(imageUrl, imageName) {
+    prodRef.update({
+      productName: name,
+      productDesc: desc,
+      productCategory: cat,
+      productSubcategory: subcat,
+      ...(imageUrl ? { imageUrl: imageUrl, imageName: imageName } : {})
+    }).then(() => {
+      Swal.fire({icon:'success',title:'Product Updated!',text:'Product information has been updated.'});
+      document.getElementById('editProductModal').style.display = 'none';
+      renderAllProducts(currentAcctNum);
+    }).catch((err) => {
+      Swal.fire({icon:'error',title:'Error',text:err.message});
+    });
+  }
+  if (file) {
+    Swal.fire({title:'Uploading...','text':'Uploading new image.','allowOutsideClick':false,didOpen:()=>{Swal.showLoading();}});
+    const imageName = Date.now() + "_" + file.name.replace(/\s+/g, "_");
+    const storageRef = storage.ref('product_images/' + currentAcctNum + '/' + imageName);
+    storageRef.put(file).then(snapshot => {
+      snapshot.ref.getDownloadURL().then(imageUrl => {
+        Swal.close();
+        updateProduct(imageUrl, imageName);
+      });
+    }).catch(err => {
+      Swal.fire({icon:'error',title:'Image Upload Failed',text:err.message});
+    });
+  } else {
+    updateProduct();
+  }
+};
+      let idImageFile = null;
+
+    document.getElementById('idImage').addEventListener('change', function(e) {
+      const img = document.getElementById('idPreview');
+      const file = e.target.files[0];
+      const cardTypeDisplay = document.getElementById('cardTypeDisplay');
+      const extractedTextArea = document.getElementById('extractedText');
+      const rawOCR = document.getElementById('rawOCR');
+        idImageFile = e.target.files[0] || null; //
+      const rawOCRDetails = document.getElementById('rawOCRDetails');
+      cardTypeDisplay.textContent = 'Processing...';
+      extractedTextArea.value = 'Extracting... Please wait.';
+      rawOCRDetails.style.display = "none";
+      if (file) {
+        img.src = URL.createObjectURL(file);
+        img.style.display = 'block';
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          Tesseract.recognize(
+            ev.target.result,
+            'eng',
+            {
+              workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
+              langPath: 'https://tessdata.projectnaptha.com/4.0.0_best'
+            }
+          ).then(({ data: { text } }) => {
+            const { summary, cardType } = extractIdFields(text || '');
+            extractedTextArea.value = summary;
+            cardTypeDisplay.textContent = cardType;
+            rawOCR.textContent = text || '';
+            rawOCRDetails.style.display = "";
+          }).catch(err => {
+            extractedTextArea.value = 'OCR Error: ' + err.message;
+            cardTypeDisplay.textContent = 'Error';
+            rawOCRDetails.style.display = "none";
+          });
+        };
+        reader.readAsDataURL(file);
+      } else {
+        img.style.display = 'none';
+        extractedTextArea.value = "";
+        cardTypeDisplay.textContent = "---";
+        rawOCRDetails.style.display = "none";
+      }
+    });
+
+    document.getElementById('productImage').addEventListener('change', function(e) {
+      const img = document.getElementById('productPreview');
+      const file = e.target.files[0];
+      if (file) {
+        img.src = URL.createObjectURL(file);
+        img.style.display = 'block';
+      } else {
+        img.style.display = 'none';
+      }
+    });
+
+    // Category & subcategory mapping
+    const subcategories = {
+      Food: ["Snacks", "Drinks", "Desserts", "Meals", "Other"],
+      Clothing: ["Shirts", "Pants", "Dresses", "Shoes", "Bags", "Other"],
+      Accessories: ["Jewelry", "Watches", "Sunglasses", "Belts", "Other"],
+      Gadgets: ["Phones", "Tablets", "Laptops", "Wearables", "Other"],
+      Beauty: ["Makeup", "Skincare", "Haircare", "Other"],
+      Home: ["Decor", "Utensils", "Furniture", "Appliances", "Other"],
+      Other: ["Other"]
+    };
+
+    const categoryInput = document.getElementById('productCategoryInput');
+    const subcategoryInput = document.getElementById('productSubcategoryInput');
+
+    categoryInput.addEventListener('change', function() {
+      const cat = this.value;
+      subcategoryInput.innerHTML = '<option value="">Select Subcategory</option>';
+      if (subcategories[cat]) {
+        subcategories[cat].forEach(sub => {
+          const opt = document.createElement('option');
+          opt.value = sub;
+          opt.textContent = sub;
+          subcategoryInput.appendChild(opt);
+        });
+      }
+    });
+
+    
+    document.getElementById('accountNumberEnterBtn').onclick = function() {
+      var acct = document.getElementById('accountNumberTop').value.trim();
+      document.getElementById('productAccountNumber').textContent = acct ? acct : "---";
+      renderAllProducts(acct);
+      if (!acct) {
+        document.getElementById('userNameDisplay').textContent = "---";
+        document.getElementById('productNameInput').value = "";
+        document.getElementById('productDescInput').value = "";
+        categoryInput.value = "";
+        subcategoryInput.innerHTML = '<option value="">Select Subcategory</option>';
+        return;
+      }
+      database.ref('users').orderByChild('accountNumber').equalTo(acct).once('value', function(snapshot) {
+        if (snapshot.exists()) {
+          const userObj = Object.values(snapshot.val())[0];
+          document.getElementById('userNameDisplay').textContent = userObj.name || "---";
+        } else {
+          document.getElementById('userNameDisplay').textContent = "---";
+        }
+        // Clear add product fields for new account lookup
+        document.getElementById('productNameInput').value = "";
+        document.getElementById('productDescInput').value = "";
+        categoryInput.value = "";
+        subcategoryInput.innerHTML = '<option value="">Select Subcategory</option>';
+        document.getElementById('productImage').value = "";
+        document.getElementById('productPreview').style.display = "none";
+      });
+    };
+
+    document.getElementById('submitProductBtn').onclick = function() {
+      const acctNum = document.getElementById('productAccountNumber').textContent.trim();
+      const productName = document.getElementById('productNameInput').value.trim();
+      const productDesc = document.getElementById('productDescInput').value.trim();
+      const productCategory = categoryInput.value;
+      const productSubcategory = subcategoryInput.value;
+      const userName = document.getElementById('userNameDisplay').textContent.trim();
+      const imageInput = document.getElementById('productImage');
+      const imageFile = imageInput.files[0];
+
+      if (!acctNum || acctNum === "---") {
+        Swal.fire({
+          icon: 'error',
+          title: 'Missing Account Number',
+          text: 'Please enter a valid account number and press Enter first.',
+          confirmButtonColor: '#e53935'
+        });
+        return;
+      }
+      if (!productName) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Missing Product Name',
+          text: 'Please enter the product name.',
+          confirmButtonColor: '#2196f3'
+        });
+        return;
+      }
+      if (!productCategory) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Missing Category',
+          text: 'Please select a category.',
+          confirmButtonColor: '#2196f3'
+        });
+        return;
+      }
+      if (!productSubcategory) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Missing Subcategory',
+          text: 'Please select a subcategory.',
+          confirmButtonColor: '#2196f3'
+        });
+        return;
+      }
+
+      database.ref('users').orderByChild('accountNumber').equalTo(acctNum).once('value', function(snapshot) {
+        if (!snapshot.exists()) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Account Not Found',
+            text: 'No user found with that account number.',
+            confirmButtonColor: '#e53935'
+          });
+          return;
+        }
+        const userId = Object.keys(snapshot.val())[0];
+        function saveProduct(imageUrl, imageName) {
+          const newProductRef = database.ref('products/' + acctNum).push();
+          newProductRef.set({
+            productName: productName,
+            productDesc: productDesc,
+            productCategory: productCategory,
+            productSubcategory: productSubcategory,
+            imageName: imageName || "",
+            imageUrl: imageUrl || "",
+            userId: userId,
+            userName: userName,
+            addedAt: new Date().toISOString()
+          }).then(() => {
+            database.ref('users/' + userId).update({
+              productDesc: productDesc,
+              latestProductImageName: imageName || "",
+              latestProductImageUrl: imageUrl || "",
+              product: productName,
+              mainCategory: productCategory,
+              subcategory: productSubcategory
+            });
+            Swal.fire({
+              icon: 'success',
+              title: 'Product Added!',
+              text: 'Product has been added for this account.',
+              confirmButtonColor: '#2196f3'
+            });
+            // Clear add form, update list
+            document.getElementById('productNameInput').value = '';
+            document.getElementById('productDescInput').value = '';
+            categoryInput.value = "";
+            subcategoryInput.innerHTML = '<option value="">Select Subcategory</option>';
+            document.getElementById('productImage').value = '';
+            document.getElementById('productPreview').style.display = 'none';
+            renderAllProducts(acctNum);
+          }).catch((error) => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.message,
+              confirmButtonColor: '#e53935'
+            });
+          });
+        }
+        if (imageFile) {
+          Swal.fire({
+            title: 'Uploading...',
+            text: 'Please wait while we upload your image.',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+          const imageName = Date.now() + "_" + imageFile.name.replace(/\s+/g, "_");
+          const storageRef = storage.ref('product_images/' + acctNum + '/' + imageName);
+          storageRef.put(imageFile).then(snapshot => {
+            snapshot.ref.getDownloadURL().then(imageUrl => {
+              Swal.close();
+              saveProduct(imageUrl, imageName);
+            });
+          }).catch(err => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Image Upload Failed',
+              text: err.message,
+              confirmButtonColor: '#e53935'
+            });
+          });
+        } else {
+          saveProduct();
+        }
+      });
+    };
+document.getElementById('verifyBtn').onclick = function() {
+  var acct = document.getElementById('accountNumberTop').value.trim();
+  if (!acct) {
+    Swal.fire({icon:'error',title:'Missing Account Number',text:'Please enter the account number in the Product Panel first!',confirmButtonColor:'#e53935'});
+    return;
+  }
+  Swal.fire({title:'Verifying...',text:'Please wait while we verify the account.',allowOutsideClick:false,didOpen:()=>{Swal.showLoading();}});
+  database.ref('users').orderByChild('accountNumber').equalTo(acct).once('value', function(snapshot) {
+    if (snapshot.exists()) {
+      const userId = Object.keys(snapshot.val())[0];
+      function finishVerification(idImageUrl) {
+        let updateObj = { verified: true };
+        if (idImageUrl) updateObj.idImageUrl = idImageUrl;
+        database.ref('users/' + userId).update(updateObj)
+          .then(() => {
+            Swal.fire({icon:'success',title:'Account Verified!',text:'The user account has been marked as verified.' + (idImageUrl ? ' ID image uploaded.' : ''),confirmButtonColor:'#2196f3'});
+          })
+          .catch((error) => {
+            Swal.fire({icon:'error',title:'Verification Failed',text:error.message,confirmButtonColor:'#e53935'});
+          });
+      }
+      if (idImageFile) {
+        const imageName = 'id_' + Date.now() + '_' + (idImageFile.name || 'id.jpg');
+        const storageRef = storage.ref('id_images/' + acct + '/' + imageName);
+        storageRef.put(idImageFile).then(snapshot => {
+          snapshot.ref.getDownloadURL().then(idImageUrl => {
+            finishVerification(idImageUrl);
+          });
+        }).catch(err => {
+          Swal.fire({icon:'error',title:'ID Image Upload Failed',text:err.message,confirmButtonColor:'#e53935'});
+        });
+      } else {
+        finishVerification();
+      }
+    } else {
+      Swal.fire({icon:'error',title:'Account Not Found',text:'No user found for this account number.',confirmButtonColor:'#e53935'});
+    }
+  }, function(error) {
+    Swal.fire({icon:'error',title:'Error',text:error.message,confirmButtonColor:'#e53935'});
+  });
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+@media (min-width: 1024px) {
+  :root {
+    --size-logo-img: 70px;
+    --size-navbar-height: 86px;
+    --size-navbar-icon: 32px;
+    --size-navbar-padding: 38px;
+    --font-title: 700 2.3rem var(--font-family);
+    --font-navbar: 600 1.55rem var(--font-family);
+    --size-box-width: 320px;
+    --size-box-height: 230px;
+    --radius-navbar: 22px;
+    --radius-box: 28px;
+    --gap-boxes: 60px;
+    --padding-main: 64px;
+    --padding-box: 42px;
+  }
+  .dashboard-navbar {
+    padding: 0 var(--size-navbar-padding);
+    height: var(--size-navbar-height);
+  }
+  .navbar-logo-img {
+    width: var(--size-logo-img);
+    height: var(--size-logo-img);
+  }
+}

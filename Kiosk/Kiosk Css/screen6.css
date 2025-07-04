@@ -1,0 +1,46 @@
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      font-family: 'Inder', sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    .container {
+      width: 90%;
+      max-width: 900px;
+      text-align: center;
+    }
+    .title {
+      font-family: 'Lilita One', cursive;
+      font-size: 4vw;
+      letter-spacing: 0.1em;
+      color: #000;
+      margin-bottom: 5vh;
+    }
+    .input-group {
+      margin-bottom: 4vh;
+      position: relative;
+    }
+    .input-label {
+      font-family: 'IM FELL Great Primer', serif;
+      font-size: 2vw;
+      color: #d3cfcf;
+      margin-bottom: 1vh;
+      display: block;
+      letter-spacing: 0.1em;
+    }
+    .input-field {
+      width: 100%;
+      max-width: 600px;
+      padding: 2vh 2vw;
+      border-radius: 15px;
+      border: none;
+      font-size: 2vw;
+      box-sizing: border-box;
+    }
+    /* No need for .chevron or .chevron-left/right anymore */

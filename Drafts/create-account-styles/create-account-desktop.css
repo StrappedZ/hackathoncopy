@@ -1,0 +1,12 @@
+@media (min-width: 1024px) {
+  :root {
+    --title-size: clamp(10rem, 7vw, 2.9rem);
+    --subtitle-size: 1.18rem;
+    --btn-padding-v: 16px;
+    --btn-padding-h: 36px;
+    --content-max-width: 510px;
+    --main-gap: 26px;
+    --card-padding: 42px 48px;
+    --card-radius: 20px;
+  }
+}

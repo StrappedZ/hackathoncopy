@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>POS QR Code Print</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      min-height: 100vh;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }
+    .wrapper {
+      background: #fff;
+      border-radius: 10px;
+      padding: 2em 2em 1.5em 2em;
+      box-shadow: 0 6px 32px #2222;
+      max-width: 380px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .row {
+      width: 100%;
+      display: flex;
+      gap: 0.5em;
+      margin-bottom: 2em;
+    }
+    input[type="text"] {
+      flex: 1 1 0;
+      padding: 0.7em;
+      font-size: 1.07em;
+      border: 1.4px solid #bfc1cc;
+      border-radius: 7px;
+      background: #f4f6fa;
+      transition: border 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    input[type="text"]:focus {
+      border: 2px solid #2B1F6F;
+      background: #fff;
+      box-shadow: 0 0 0 3px #2b1f6f18;
+    }
+    button {
+      padding: 0.7em 1.4em;
+      background: #2B1F6F;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 1.07em;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      font-weight: 600;
+    }
+    button:hover, button:focus {
+      background: #414345;
+    }
+    #qrcode {
+      margin-bottom: 1.2em;
+      background: #fff;
+      padding: 0;
+      border-radius: 6px;
+      min-height: 128px;
+      min-width: 128px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 14px #2b1f6f0e;
+    }
+    @media print {
+      body, html {
+        background: #fff !important;
+      }
+      .wrapper {
+        box-shadow: none !important;
+        padding: 0 !important;
+        background: #fff !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+      }
+      .row, #printBtn {
+        display: none !important;
+      }
+      #qrcode {
+        margin: 0 !important;
+        box-shadow: none !important;
+        background: #fff !important;
+        padding: 0 !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        justify-content: flex-start;
+      }
+      #qrcode img, #qrcode canvas {
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+      }
+    }
+  </style>
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="row">
+      <input type="text" id="qrInput" placeholder="Enter text to encode">
+      <button id="generateBtn" type="button">Enter</button>
+    </div>
+    <div id="qrcode"></div>
+    <button id="printBtn" type="button">Print</button>
+  </div>
+  <script>
+    function generateQR() {
+      const text = document.getElementById('qrInput').value.trim();
+      const qrDiv = document.getElementById("qrcode");
+      qrDiv.innerHTML = "";
+      if (!text) return;
+      // Generate 128x128 for your printer
+      var qrcode = new QRCode(qrDiv, {
+        text: text,
+        width: 128,
+        height: 128,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+      });
+      setTimeout(function() {
+        // Convert canvas to image for printing (POS printers prefer <img>)
+        var canvas = qrDiv.querySelector("canvas");
+        if (canvas) {
+          var img = new Image();
+          img.src = canvas.toDataURL("image/png");
+          qrDiv.innerHTML = "";
+          qrDiv.appendChild(img);
+        }
+      }, 400);
+    }
+
+    document.getElementById('generateBtn').onclick = generateQR;
+    document.getElementById('qrInput').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') generateQR();
+    });
+    document.getElementById('printBtn').onclick = function() {
+      window.print();
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="theme.css">
+  <meta charset="UTF-8" />
+  <title>ScaleUp - Review Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=IM+FELL+GreatPrimer&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Kiosk Css/screen7.css">
+
+
+</head>
+<body>
+  <div class="container">
+    <div class="header">Review Your Details</div>
+    <div class="field">Business Name: <span id="businessName"></span>
+      <span class="edit-icon" onclick="window.location.href='screen5.html'">&#9998;</span>
+    </div>
+    <div class="field">Product: <span id="product"></span>
+      <span class="edit-icon" onclick="window.location.href='screen5.html'">&#9998;</span>
+    </div>
+    <div class="field">Tagline: <span id="tagline"></span>
+      <span class="edit-icon" onclick="window.location.href='screen5.html'">&#9998;</span>
+    </div>
+    <div class="field">Funding Goal: <span id="funding"></span>
+      <span class="edit-icon" onclick="window.location.href='screen6.html'">&#9998;</span>
+    </div>
+    <div class="field">Purpose: <span id="purpose"></span>
+      <span class="edit-icon" onclick="window.location.href='screen6.html'">&#9998;</span>
+    </div>
+  </div>
+
+  <div class="back-chevron" id="backBtn" aria-label="Go Back">
+    <svg class="back-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <polyline points="20,8 12,16 20,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <!-- Forward Button (Bottom Right) -->
+  <div class="forward-chevron" id="nextBtn" aria-label="Go Forward">
+    <svg class="forward-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <polyline points="12,8 20,16 12,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+
+  <script>
+    document.getElementById("businessName").innerText = localStorage.getItem("businessName") || "N/A";
+    document.getElementById("product").innerText = localStorage.getItem("product") || "N/A";
+    document.getElementById("tagline").innerText = localStorage.getItem("tagline") || "N/A";
+    document.getElementById("funding").innerText = "₱" + (localStorage.getItem("funding") || "N/A");
+    document.getElementById("purpose").innerText = localStorage.getItem("purpose") || "N/A";
+
+    document.getElementById("nextBtn").addEventListener("click", function () {
+      window.location.href = "printing.html";
+    });
+
+    document.getElementById("backBtn").addEventListener("click", function () {
+      window.location.href = "screen6.html";
+    });
+  </script>
+</body>
+</html>

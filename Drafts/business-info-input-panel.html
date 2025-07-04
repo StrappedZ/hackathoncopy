@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tell Us About Your Business</title>
+  <link rel="stylesheet" href="business-info-input-panel-style/business-info-input-panel-style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .dice-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2em;
+      vertical-align: middle;
+      margin-left: 6px;
+      transition: transform 0.15s;
+    }
+    .dice-btn:active {
+      transform: rotate(20deg) scale(1.2);
+    }
+    .tagline-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4em;
+    }
+  </style>
+</head>
+<body>
+  <main class="business-info-center-main">
+    <div class="business-info-card wide">
+      <div class="business-info-form-header">
+        <img class="business-info-logo" src="https://via.placeholder.com/36x36?text=Logo" alt="Logo Placeholder" />
+        <span class="business-info-form-title">Tell Us About Your Business</span>
+      </div>
+      <form class="business-info-form" autocomplete="off" id="businessInfoForm">
+        <label for="businessName" class="business-info-label">Business Name</label>
+        <input type="text" id="businessName" name="businessName" class="business-info-input" placeholder="e.g. Blue Ocean Cafe" required>
+
+        <label for="product" class="business-info-label">Product</label>
+        <input type="text" id="product" name="product" class="business-info-input" placeholder="e.g. Organic Coffee" required>
+
+        <label for="mainCategory" class="business-info-label">Category</label>
+        <select id="mainCategory" name="mainCategory" class="business-info-input" required>
+          <option value="" disabled selected>Select main category</option>
+          <option value="Fashion & Apparel">👗 Fashion & Apparel</option>
+          <option value="Electronics">💻 Electronics</option>
+          <option value="Home & Living">🏠 Home & Living</option>
+          <option value="Beauty & Personal Care">🧴 Beauty & Personal Care</option>
+          <option value="Food & Grocery">🍔 Food & Grocery</option>
+          <option value="Toys & Games">🧸 Toys & Games</option>
+          <option value="Pet Supplies">🐶 Pet Supplies</option>
+          <option value="Fitness & Sports">🏋️ Fitness & Sports</option>
+          <option value="Books & Stationery">📚 Books & Stationery</option>
+          <option value="Automotive">🚗 Automotive</option>
+          <option value="Services">🛠️ Services</option>
+        </select>
+
+        <label for="subcategory" class="business-info-label">Subcategory</label>
+        <select id="subcategory" name="subcategory" class="business-info-input" required>
+          <option value="" disabled selected>Select a subcategory</option>
+        </select>
+
+        <label for="tagline" class="business-info-label">Tagline</label>
+        <div class="tagline-row">
+          <input type="text" id="tagline" name="tagline" class="business-info-input" placeholder="e.g. Freshness in Every Cup" required style="flex:1;">
+          <button type="button" class="dice-btn" title="Randomize tagline" id="taglineDiceBtn" tabindex="-1" aria-label="Randomize tagline">
+            🎲
+          </button>
+        </div>
+
+        <button type="submit" id="submit" class="business-info-btn-primary">Proceed</button>
+      </form>
+    </div>
+  </main>
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const database = firebase.database();
+
+    // Subcategories map
+    const subcategories = {
+      "Fashion & Apparel": [
+        "Men’s Clothing", "Women’s Clothing", "Kids & Baby", "Baby Clothes", "Shoes", "Accessories", "Bags", "Jewelry"
+      ],
+      "Electronics": [
+        "Mobile Phones", "Laptops & Computers", "Tablets", "Smartwatches", "Audio Devices", "Cables & Accessories"
+      ],
+      "Home & Living": [
+        "Furniture", "Kitchenware", "Home Decor", "Lighting", "Bedding", "Cleaning & Storage"
+      ],
+      "Beauty & Personal Care": [
+        "Skincare", "Makeup", "Hair Care", "Fragrances", "Hygiene Products"
+      ],
+      "Food & Grocery": [
+        "Snacks", "Beverages", "Organic & Health Foods", "Baking Essentials", "Canned & Packaged Goods"
+      ],
+      "Toys & Games": [
+        "Educational Toys", "Board Games", "Plush & Dolls", "Outdoor Toys", "Building Blocks"
+      ],
+      "Pet Supplies": [
+        "Food & Treats", "Toys & Beds", "Grooming Supplies", "Pet Accessories"
+      ],
+      "Fitness & Sports": [
+        "Exercise Equipment", "Activewear", "Yoga Mats & Gear", "Outdoor & Camping Gear"
+      ],
+      "Books & Stationery": [
+        "Fiction & Non-Fiction", "School & Office Supplies", "Art & Craft"
+      ],
+      "Automotive": [
+        "Car Accessories", "Motorbike Gear", "Tools", "Car Care Products"
+      ],
+      "Services": [
+        "Home Cleaning", "Car Wash & Detailing", "Appliance Repair", "Lawn & Garden Care",
+        "Haircut & Styling", "Makeup Services", "Massage Therapy", "Nail & Spa Treatments", "Skincare Treatments",
+        "Device Repair (Phones, Laptops)", "Website Development", "Software Installation", "Network Setup & Support",
+        "Photography", "Video Editing", "Graphic Design", "Content Writing",
+        "Academic Tutoring", "Language Lessons", "Music Classes", "Online Courses",
+        "Local Delivery", "Package Forwarding", "Courier Services",
+        "Event Planning", "DJ & Sound Services", "Party Rentals", "Catering Services",
+        "Printing & Scanning", "Virtual Assistant", "Accounting & Tax Filing", "Legal Consultation"
+      ]
+    };
+
+    // Tagline templates for randomization
+    const taglineTemplates = [
+      "{businessName}: {categoryPhrase}",
+      "{categoryPhrase} at {businessName}",
+      "Your {categoryPhrase} Destination",
+      "Experience {categoryPhrase} with {businessName}",
+      "Where {categoryPhrase} Matters",
+      "Bringing You The Best in {categoryPhrase}",
+      "{businessName} - {catchword}",
+      "{catchword} {categoryPhrase} for You",
+      "{businessName}: {catchword} {categoryPhrase}",
+      "Discover {catchword} {categoryPhrase}"
+    ];
+    const catchwords = [
+      "Premium",
+      "Quality",
+      "Affordable",
+      "Fresh",
+      "Innovative",
+      "Trusted",
+      "Expert",
+      "Unique",
+      "Handpicked",
+      "Delightful",
+      "Smart",
+      "Eco-Friendly",
+      "Stylish",
+      "Family-Friendly",
+      "Fast"
+    ];
+
+    // Helper to get a random item
+    function rand(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function getCategoryPhrase(mainCategory, subcategory) {
+      // Prefer subcategory, fallback to mainCategory
+      if (subcategory && subcategory !== "") {
+        return subcategory;
+      }
+      if (mainCategory && mainCategory !== "") {
+        return mainCategory;
+      }
+      return "Products";
+    }
+
+    function randomizeTagline() {
+      const businessName = document.getElementById('businessName').value.trim() || "Your Business";
+      const mainCategory = document.getElementById('mainCategory').value;
+      const subcategory = document.getElementById('subcategory').value;
+      const categoryPhrase = getCategoryPhrase(mainCategory, subcategory);
+      const template = rand(taglineTemplates);
+      const catchword = rand(catchwords);
+
+      let tagline = template
+        .replace(/\{businessName\}/g, businessName)
+        .replace(/\{categoryPhrase\}/g, categoryPhrase)
+        .replace(/\{catchword\}/g, catchword);
+
+      // Capitalize first letter
+      tagline = tagline.charAt(0).toUpperCase() + tagline.slice(1);
+
+      document.getElementById('tagline').value = tagline;
+    }
+
+    document.getElementById('taglineDiceBtn').addEventListener('click', function() {
+      randomizeTagline();
+    });
+
+    // Handle subcategory population
+    document.getElementById('mainCategory').addEventListener('change', function() {
+      const selected = this.value;
+      const subcat = document.getElementById('subcategory');
+      subcat.innerHTML = '<option value="" disabled selected>Select a subcategory</option>';
+      if (subcategories[selected]) {
+        subcategories[selected].forEach(sc => {
+          const opt = document.createElement('option');
+          opt.value = sc;
+          opt.textContent = sc;
+          subcat.appendChild(opt);
+        });
+      }
+    });
+
+    // Prefill for returning users
+    window.addEventListener('DOMContentLoaded', function() {
+      Swal.fire({
+        title: 'Tell us something about your business!',
+        icon: 'info',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+        background: '#f8fafc',
+        color: '#23405c'
+      });
+      document.getElementById("businessName").value = localStorage.getItem("businessName") || "";
+      document.getElementById("product").value = localStorage.getItem("product") || "";
+      const mainCat = localStorage.getItem('mainCategory') || "";
+      const subCat = localStorage.getItem('subcategory') || "";
+      if (mainCat) {
+        document.getElementById('mainCategory').value = mainCat;
+        document.getElementById('mainCategory').dispatchEvent(new Event('change'));
+      }
+      setTimeout(() => {
+        if (subCat) {
+          document.getElementById('subcategory').value = subCat;
+        }
+        document.getElementById("tagline").value = localStorage.getItem("tagline") || "";
+      }, 100);
+    });
+
+    // Form submission
+    document.getElementById('businessInfoForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const businessName = document.getElementById('businessName').value.trim();
+      const product = document.getElementById('product').value.trim();
+      const tagline = document.getElementById('tagline').value.trim();
+      const mainCategory = document.getElementById('mainCategory').value;
+      const subcategory = document.getElementById('subcategory').value;
+
+      if (!businessName || !product || !tagline || !mainCategory || !subcategory) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Incomplete',
+          text: 'Please fill in all fields.',
+          confirmButtonColor: '#2196f3'
+        });
+        return;
+      }
+
+      // Store for prefill
+      localStorage.setItem("businessName", businessName);
+      localStorage.setItem("product", product);
+      localStorage.setItem("tagline", tagline);
+      localStorage.setItem("mainCategory", mainCategory);
+      localStorage.setItem("subcategory", subcategory);
+
+     firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    const uid = user.uid;
+    const productData = {
+      businessName: businessName,
+      product: product,
+      tagline: tagline,
+      mainCategory: mainCategory,
+      subcategory: subcategory,
+      timestamp: new Date().toISOString()
+    };
+    // Update user info
+    database.ref('users/' + uid).update(productData)
+    .then(() => {
+      // Add to /categories for analytics, etc.
+      database.ref('categories/' + mainCategory.replace(/[.#$\[\]]/g, "_") + '/' + subcategory.replace(/[.#$\[\]]/g, "_")).push({
+        uid: uid,
+        businessName: businessName,
+        product: product,
+        tagline: tagline,
+        timestamp: productData.timestamp
+      });
+      // NEW: Add to /products/{uid} (push if you want multiple products per user)
+      database.ref('products/' + uid).push(productData)
+      .then(() => {
+        window.location.href = "business-purpose-input-panel.html";
+      });
+    }).catch((error) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message,
+        confirmButtonColor: '#e53935'
+      });
+    });
+  } else {
+    Swal.fire({
+      icon: 'error',
+      title: 'Not Signed In',
+      text: 'You must be signed in to continue.',
+      confirmButtonColor: '#e53935'
+    });
+  }
+});
+    });
+  </script>
+  <style>
+    .swal2-business-modal {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1.07em;
+      border-radius: 12px;
+      box-shadow: 0 6px 40px #23405c22;
+    }
+  </style>
+</body>
+</html> 

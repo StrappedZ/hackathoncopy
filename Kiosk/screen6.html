@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="theme.css">
+  <meta charset="UTF-8" />
+  <title>Go Invest Kiosk - Screen 6</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=IM+FELL+Great+Primer&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Kiosk Css/screen6.css">
+
+
+</head>
+<body>
+  <div class="container">
+    <div class="title">Funding Goal and Purpose</div>
+
+    <div class="input-group">
+      <label class="input-label" for="goal">Funding Goal</label>
+      <input type="text" class="input-field" id="goal" placeholder="Enter funding goal">
+    </div>
+
+    <div class="input-group">
+      <label class="input-label" for="purpose">How will the funds be used?</label>
+      <input type="text" class="input-field" id="purpose" placeholder="Describe fund usage">
+    </div>
+  </div>
+
+  <!-- Back Button (Bottom Left) -->
+  <div class="back-chevron" id="backBtn" aria-label="Go Back">
+    <svg class="back-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <polyline points="20,8 12,16 20,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <!-- Forward Button (Bottom Right) -->
+  <div class="forward-chevron" id="nextBtn" aria-label="Go Forward">
+    <svg class="forward-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <polyline points="12,8 20,16 12,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+ <script>
+  // Prefill funding and purpose from localStorage
+  const fundingInput = document.getElementById("goal");
+  const purposeInput = document.getElementById("purpose");
+  fundingInput.value = localStorage.getItem("funding") || "";
+  purposeInput.value = localStorage.getItem("purpose") || "";
+
+  fundingInput.addEventListener("input", function (e) {
+    // remove all non-digit
+    let raw = e.target.value.replace(/\D/g, "");
+
+    // limit to 6 digits max
+    if (raw.length > 6) raw = raw.slice(0, 6);
+
+    // format with commas
+    e.target.value = raw ? Number(raw).toLocaleString("en-US") : "";
+  });
+
+  document.getElementById("backBtn").addEventListener("click", () => {
+    window.location.href = "screen5.html";
+  });
+
+  document.getElementById("nextBtn").addEventListener("click", () => {
+    const funding = fundingInput.value.trim();
+    const purpose = purposeInput.value.trim();
+
+    localStorage.setItem("funding", funding);
+    localStorage.setItem("purpose", purpose);
+
+    window.location.href = "screen7.html";
+  });
+</script>
+
+</body>
+</html>

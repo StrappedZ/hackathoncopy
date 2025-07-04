@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scale Up Tablet Dashboard</title>
+  <link rel="stylesheet" href="access-panel-styles/access-panel-base.css">
+  <link rel="stylesheet" href="access-panel-styles/access-panel-mobile.css">
+  <link rel="stylesheet" href="access-panel-styles/access-panel-tablet.css">
+  <link rel="stylesheet" href="access-panel-styles/access-panel-desktop.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    .navbar-vault-info {
+      cursor: pointer;
+      transition: background 0.18s;
+      border-radius: 7px;
+      padding: 2px 5px;
+    }
+    .navbar-vault-info:hover {
+      background: #2196f320;
+    }
+  </style>
+</head>
+<body>
+  <nav class="dashboard-navbar">
+    <div class="navbar-center">
+      <img src="https://via.placeholder.com/64x64?text=Logo" alt="Logo" class="navbar-logo-img" />
+      <span class="navbar-title">Scale Up</span>
+    </div>
+    <div class="navbar-right">
+      <div class="navbar-vault-info" id="vault-unoccupied-info">
+        <span class="vault-icon">
+          <!-- Unoccupied icon (open lock) -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="10" rx="2" />
+            <circle cx="12" cy="16" r="2" />
+            <path d="M7 11V7a5 5 0 0 1 9-2" />
+          </svg>
+        </span>
+        <span class="vault-number vault-unoccupied" id="vault-unoccupied">--</span>
+      </div>
+      <div class="navbar-vault-info" id="vault-occupied-info">
+        <span class="vault-icon">
+          <!-- Occupied icon (locked lock) -->
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="10" rx="2"/>
+            <circle cx="12" cy="16" r="2"/>
+            <path d="M7 11V7a5 5 0 1 1 10 0v4"/>
+          </svg>
+        </span>
+        <span class="vault-number vault-occupied" id="vault-occupied">--</span>
+      </div>
+    </div>
+  </nav>
+  <main class="dashboard-main">
+    <div class="dashboard-boxes">
+      <a class="dashboard-box dashboard-box-create" href="#">
+        <span>Create</span>
+      </a>
+      <a class="dashboard-box dashboard-box-browse" href="#">
+        <span>Browse</span>
+      </a>
+      <a class="dashboard-box dashboard-box-admin" href="#">
+        <span>Admin</span>
+      </a>
+    </div>
+  </main>
+  <script>
+    // Change this to your ESP32 endpoint
+    const ESP32_IP = "192.168.1.22";
+    fetch(`http://${ESP32_IP}/slots`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("vault-occupied").textContent = data.occupied ? data.occupied.length : "--";
+        document.getElementById("vault-unoccupied").textContent = data.free ? data.free.length : "--";
+      })
+      .catch(() => {
+        document.getElementById("vault-occupied").textContent = "N/A";
+        document.getElementById("vault-unoccupied").textContent = "N/A";
+      });
+
+    document.getElementById('vault-unoccupied-info').addEventListener('click', function() {
+      Swal.fire({
+        icon: 'error',
+        title: 'Unoccupied Vaults',
+        text: 'These are the available vaults!',
+        confirmButtonColor: '#2196f3'
+      });
+    });
+
+    document.getElementById('vault-occupied-info').addEventListener('click', function() {
+      Swal.fire({
+        icon: 'success',
+        title: 'Occupied Vaults',
+        text: 'These vaults are currently occupied (in use).',
+        confirmButtonColor: '#2196f3'
+      });
+    });
+  </script>
+</body>
+</html>

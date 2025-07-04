@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link id="settings-css" rel="stylesheet" href="AccountManage/account.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"/>
+  <style>
+    .profile-pic-row {
+  display: flex; align-items: center; gap: 20px; margin-bottom: 28px; margin-top: 8px;
+}
+.profile-picture {
+  width: 96px; height: 96px; border-radius: 50%;
+  object-fit: cover; border: 3px solid #e3eafc; background: #f6faff;
+  box-shadow: 0 4px 16px #bfcafc33;
+}
+.profile-pic-upload-label {
+  font-weight: 500; color: #206be6; cursor: pointer; border: 1px solid #e3eafc; background: #f2f6fc;
+  border-radius: 8px; padding: 8px 18px; transition: background 0.14s, color 0.14s;
+  margin-left: 2px; display: inline-block;
+}
+.profile-pic-upload-label:hover { background: #eaf3ff; color: #195fc1; }
+#profile-pic-upload { display: none; }
+    html, body {
+      margin: 0; padding: 0; height: 100%; min-height: 100vh; width: 100vw;
+      box-sizing: border-box; background: linear-gradient(135deg, #f6f8fb 65%, #e7eafd 100%);
+      font-family: 'Builder Sans', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+      color: #191919; font-size: 15px; overflow-x: hidden;
+    }
+    .settings-back-header {
+      width: 100%; height: 54px; background: #fff; display: flex; align-items: center;
+      box-shadow: 0 2px 12px 0 rgba(60,55,170,0.07);
+      border-bottom: 1px solid #e6e9f2; z-index: 20; position: relative;
+    }
+    .settings-back-btn {
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: none; outline: none; padding: 0 18px; cursor: pointer;
+      font-size: 1.4em; color: #191919; height: 54px; width: 54px; transition: background 0.1s;
+    }
+    .settings-back-btn:hover { background: #f2f6fc; }
+    .settings-back-btn svg { display: block; }
+    .settings-layout { display: flex; min-height: 100vh; justify-content: center; align-items: flex-start; }
+    .drawer {
+      width: 220px; background: #fff; border-right: 1.5px solid #e6e9f2;
+      box-shadow: 2px 0 16px 0 rgba(60,55,170,0.04); display: flex; flex-direction: column;
+      margin-top: 28px; padding-top: 28px; padding-bottom: 28px; z-index: 2; height: auto; align-items: flex-start;
+      border-radius: 18px;
+    }
+    .drawer-title {
+      font-size: 1.22rem; font-weight: 700; color: #191919; margin-bottom: 28px; margin-top: 0;
+      padding-left: 32px; padding-top: 0; letter-spacing: 0.01em; user-select: none;
+      font-family: inherit; text-transform: uppercase;
+    }
+    .drawer-menu { display: flex; flex-direction: column; gap: 2px; width: 100%; }
+    .drawer-item {
+      display: flex; align-items: center; padding: 12px 18px 12px 32px; font-size: 0.97rem; font-weight: 600;
+      color: #191919; background: #fff; border: none; outline: none; cursor: pointer;
+      transition: background .12s, color .12s, border-left-color .18s;
+      border-left: 3px solid transparent; text-align: left; width: 100%; border-radius: 0 10px 10px 0;
+      font-family: inherit; letter-spacing: 0.01em; position: relative; z-index: 3;
+    }
+    .drawer-item.selected, .drawer-item:focus, .drawer-item:hover {
+      background: linear-gradient(90deg, #f2f6fc 80%, #eaf3ff 100%);
+      color: #206be6; border-left: 3px solid #2a84e9; box-shadow: 1px 0 6px #c7d6ff33;
+    }
+    .account-main-center {
+      width: 100%; max-width: 900px; min-width: 0; margin: 32px 0 0 0;
+      display: flex; flex-direction: column; padding: 0 24px 32px 24px;
+      box-sizing: border-box; align-items: center;
+    }
+    .tab-section {
+      margin-bottom: 60px; width: 100%; max-width: 860px; min-width: 0; box-sizing: border-box;
+      background: #fff; border-radius: 18px; box-shadow: 0 6px 32px #bfcafc1f;
+      padding: 32px 24px 38px 24px; margin-top: 15px; transition: box-shadow 0.15s;
+      display: none;
+    }
+    .tab-section.active { display: block; animation: fadeIn 0.44s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px);} to { opacity: 1; transform: none; } }
+    .account-title, .placeholder-title, .manage-title {
+      font-size: 2.1rem; font-weight: 700; color: #31418a; margin-bottom: 18px;
+      letter-spacing: 0.01em; text-shadow: 0 2px 10px #c8d6ff1c;
+    }
+    .notification {
+      background: linear-gradient(90deg, #e7eafd 60%, #fff 100%);
+      border-left: 5px solid #6793fa; color: #31418a; padding: 10px 16px; border-radius: 8px;
+      margin: 0 0 22px 0; font-size: 1.02em; box-shadow: 0 4px 20px #e7eafd36;
+    }
+    .privacy-card {
+      background: linear-gradient(120deg, #f8fafd, #eef3ff 80%);
+      border-radius: 18px;
+      box-shadow: 0 2px 18px #bfcafc33;
+      padding: 30px 26px 26px 26px;
+      max-width: 415px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 24px;
+      border: 1px solid #e3eafc;
+    }
+    .privacy-card h1 {
+      font-size: 1.5em;
+      color: #31418a;
+      margin: 0 0 18px 0;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+    .privacy-label {
+      font-weight: 500; color: #4b57a5; margin-bottom: 8px; font-size: 1.06em;
+    }
+    .privacy-row {
+      display: flex; flex-direction: column; gap: 7px; margin-bottom: 0;
+    }
+    .privacy-form label {
+      color: #6273bd; font-weight: 500; font-size: 1em; margin: 9px 0 3px 1px; display: block;
+    }
+    .privacy-form input[type="password"] {
+      width: 100%; padding: 8px 11px; border-radius: 6px; border: 1px solid #d7dae8;
+      font-size: 1.07em; background: #f6faff; color: #191919; transition: border-color 0.14s;
+    }
+    .privacy-form input[type="password"]:focus { outline: none; border-color: #206be6; background: #f5faff; }
+    .privacy-form button[type="submit"] {
+      margin-top: 16px; background: linear-gradient(90deg, #5c7dfa 45%, #2a84e9 100%);
+      color: #fff; font-weight: 700; border: none; border-radius: 6px;
+      padding: 9px 0; font-size: 1.09em; cursor: pointer; box-shadow: 0 2px 12px #bfcafc1c;
+      transition: background 0.14s;
+    }
+    .privacy-form button[type="submit"]:hover { background: linear-gradient(90deg, #4168d7 45%, #195fc1 100%); }
+    .verified-status-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fdfaeb;
+      border: 1.5px solid #f7c2c2;
+      border-radius: 8px;
+      color: #d92c2c;
+      font-weight: 600;
+      font-size: 1.08em;
+      margin-bottom: 18px;
+      padding: 12px 18px 12px 14px;
+      position: relative;
+      min-height: 46px;
+      width: fit-content;
+      max-width: 100%;
+    }
+    .verified-status-box.verified {
+      background: #e6f8eb;
+      border: 1.5px solid #8be4a6;
+      color: #24974e;
+    }
+    .verified-status-box button {
+      background: #fff;
+      border: 1px solid #b0cfff;
+      color: #206be6;
+      border-radius: 7px;
+      padding: 4px 13px;
+      font-size: 0.99em;
+      font-weight: 500;
+      margin-left: 12px;
+      cursor: pointer;
+      transition: background .14s, border .14s;
+    }
+    .verified-status-box button:hover {
+      background: #eaf3ff;
+      border: 1px solid #206be6;
+    }
+    .send-verif-msg {
+      font-size: 0.97em;
+      font-weight: 400;
+      margin-left: 10px;
+      color: #24974e;
+    }
+    .divider {
+      border-top: 1px solid #e2e3ee; margin: 26px 0 22px 0;
+    }
+    .manage-main-center {
+      max-width: 550px; margin: 0 auto;
+      background: none;
+      border-radius: 14px;
+      padding: 0;
+      display: flex; flex-direction: column; align-items: stretch;
+    }
+    .manage-title { font-size: 2rem; font-weight: 700; text-align: left; margin-bottom: 20px; color: #31418a;}
+    .manage-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+    .manage-label { font-weight: 600; color: #31418a; }
+    .manage-value { font-size: 1.09em; color: #444; }
+    .sub-box {
+      margin: 18px 0 0 0;
+      padding: 15px 16px;
+      background: #f6faff;
+      border-radius: 8px;
+      font-size: 1.02em;
+      color: #3056cd;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      border: 1px solid #e3eafc;
+    }
+    .payments-section {
+      margin-top: 30px;
+    }
+    .payments-section h2 {
+      font-size: 1.3em;
+      color: #31418a;
+      margin-bottom: 12px;
+    }
+    #payments-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 1em;
+      box-shadow: 0 2px 8px #dbeaff22;
+      margin-top: 5px;
+    }
+    #payments-table th, #payments-table td {
+      padding: 8px 5px;
+      border-bottom: 1px solid #e6e9f2;
+      text-align: left;
+    }
+    #payments-table th {
+      background: #f6faff;
+      font-weight: 700;
+      color: #3d4ba3;
+    }
+    #payments-table td {
+      background: #fff;
+    }
+    #payments-table tr:last-child td {
+      border-bottom: none;
+    }
+    /* Hide inline editing UI but keep them in DOM */
+    .editable-field, .save-btn, .cancel-btn { display: none !important; }
+    .edit-btn {
+      display: inline-block;
+      background: none;
+      border: none;
+      outline: none;
+      margin-left: 7px;
+      cursor: pointer;
+      font-size: 1.11em;
+      color: #206be6;
+      transition: color .14s;
+      padding: 1px 6px;
+      border-radius: 6px;
+    }
+    .edit-btn:hover {
+      background: #eaf3ff;
+      color: #195fc1;
+    }
+    /* SweetAlert2 customization */
+    .swal2-confirm.custom-save-btn {
+      background: linear-gradient(90deg, #5c7dfa 45%, #2a84e9 100%) !important;
+      color: #fff !important; font-weight: 700 !important;
+      border-radius: 6px !important; padding: 9px 32px !important;
+      font-size: 1.09em !important; box-shadow: 0 2px 12px #bfcafc1c;
+      border: none !important;
+    }
+    .swal2-cancel.custom-cancel-btn {
+      background: #eaf3ff !important; color: #206be6 !important;
+      border-radius: 6px !important; font-weight: 600 !important;
+      font-size: 1.09em !important; padding: 9px 32px !important;
+      border: none !important; margin-left: 7px !important;
+    }
+    .swal2-popup {
+      font-size: 1.09em !important;
+      font-family: inherit !important;
+    }
+    .swal2-input {
+      padding: 9px 13px !important; border-radius: 6px !important;
+      border: 1px solid #d7dae8 !important; background: #f6faff !important;
+      color: #191919 !important;
+      font-size: 1.05em !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="settings-back-header">
+    <button class="settings-back-btn" id="settings-back-btn" aria-label="Back to previous page">
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none"
+           xmlns="http://www.w3.org/2000/svg">
+        <polyline points="16.5 20 9.5 13 16.5 6" stroke="#191919" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+  <div class="settings-layout">
+    <nav class="drawer" aria-label="Settings navigation">
+      <div class="drawer-title">SETTINGS</div>
+      <div class="drawer-menu">
+        <button class="drawer-item selected" id="drawer-account" tabindex="0">
+          Account
+        </button>
+        <button class="drawer-item" id="drawer-privacy" tabindex="0">
+          Privacy &amp; Security
+        </button>
+        <button class="drawer-item" id="drawer-manage" tabindex="0">
+          Manage
+        </button>
+      </div>
+    </nav>
+    <main class="account-main-center">
+      <!-- Account Section -->
+      <section id="account-section" class="tab-section active">
+        <div class="account-container">
+          <div class="account-header">
+            <h1 class="account-title">Account Settings</h1>
+          </div>
+          <div class="notification" role="alert">
+            Finish setting up your profile to make it more engaging!
+          </div>
+          <div class="sections-flex">
+            <div class="profile-section" aria-labelledby="profile-section-label">
+              <div class="profile-pic-row">
+  <img src="https://ui-avatars.com/api/?name=User&background=dae6ff&color=3d4ba3" alt="Profile Picture" id="profile-picture" class="profile-picture" />
+  <label class="profile-pic-upload-label" for="profile-pic-upload">Change Photo</label>
+  <input type="file" accept="image/*" id="profile-pic-upload" />
+</div>
+              <span id="profile-section-label" class="section-label">Business Info</span>
+              <div class="info-row">
+                <span class="info-label">Business Name</span>
+                <span class="editable-value" id="business-name-value">Loading...</span>
+                <input class="editable-field" id="business-name-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('businessName')">✏️</button>
+                <button class="save-btn" onclick="saveField('businessName')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('businessName')">Cancel</button>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Product</span>
+                <span class="editable-value" id="product-value">Loading...</span>
+                <input class="editable-field" id="product-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('product')">✏️</button>
+                <button class="save-btn" onclick="saveField('product')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('product')">Cancel</button>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Tagline</span>
+                <span class="editable-value" id="tagline-value">Loading...</span>
+                <input class="editable-field" id="tagline-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('tagline')">✏️</button>
+                <button class="save-btn" onclick="saveField('tagline')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('tagline')">Cancel</button>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Purpose</span>
+                <span class="editable-value" id="purpose-value">Loading...</span>
+                <input class="editable-field" id="purpose-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('purpose')">✏️</button>
+                <button class="save-btn" onclick="saveField('purpose')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('purpose')">Cancel</button>
+              </div>
+            </div>
+            <div class="required-section" aria-labelledby="enrich-section-label">
+              <span id="enrich-section-label" class="section-label">Complete Your Profile</span>
+              <div class="required-row">
+                <span class="required-field-label">Experience:</span>
+                <span class="editable-value" id="experience-value">Loading...</span>
+                <input class="editable-field" id="experience-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('experience')">✏️</button>
+                <button class="save-btn" onclick="saveField('experience')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('experience')">Cancel</button>
+              </div>
+              <div class="required-row">
+                <span class="required-field-label">Location:</span>
+                <span class="editable-value" id="location-value">Loading...</span>
+                <input class="editable-field" id="location-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('location')">✏️</button>
+                <button class="save-btn" onclick="saveField('location')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('location')">Cancel</button>
+              </div>
+              <div class="required-row">
+                <span class="required-field-label">Awards:</span>
+                <span class="editable-value" id="awards-value">Loading...</span>
+                <input class="editable-field" id="awards-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('awards')">✏️</button>
+                <button class="save-btn" onclick="saveField('awards')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('awards')">Cancel</button>
+              </div>
+              <div class="required-row">
+                <span class="required-field-label">What you look for a partnership?</span>
+                <span class="editable-value" id="partnership-value">Loading...</span>
+                <input class="editable-field" id="partnership-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('partnership')">✏️</button>
+                <button class="save-btn" onclick="saveField('partnership')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('partnership')">Cancel</button>
+              </div>
+              <div class="required-row" style="margin-bottom:0;">
+                <span class="required-field-label" style="min-width:110px;">Social Medias:</span>
+              </div>
+              <div class="social-row">
+                <span class="social-label">Facebook:</span>
+                <span class="editable-value" id="facebook-value">Loading...</span>
+                <input class="editable-field" id="facebook-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('facebook')">✏️</button>
+                <button class="save-btn" onclick="saveField('facebook')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('facebook')">Cancel</button>
+              </div>
+              <div class="social-row">
+                <span class="social-label">Youtube:</span>
+                <span class="editable-value" id="youtube-value">Loading...</span>
+                <input class="editable-field" id="youtube-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('youtube')">✏️</button>
+                <button class="save-btn" onclick="saveField('youtube')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('youtube')">Cancel</button>
+              </div>
+              <div class="social-row">
+                <span class="social-label">Messenger:</span>
+                <span class="editable-value" id="messenger-value">Loading...</span>
+                <input class="editable-field" id="messenger-input" type="text" value="" />
+                <button class="edit-btn" onclick="editFieldModal('messenger')">✏️</button>
+                <button class="save-btn" onclick="saveField('messenger')">Save</button>
+                <button class="cancel-btn" onclick="cancelEdit('messenger')">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Privacy & Security Section -->
+      <section id="privacy-section" class="tab-section">
+        <div class="privacy-card">
+          <h1>Privacy &amp; Security</h1>
+          <div class="privacy-row">
+            <span class="privacy-label">Account</span>
+            <div id="email-status"></div>
+            <div class="verified-status" id="verified-status">Checking verification...</div>
+          </div>
+          <form class="privacy-form" id="change-password-form" autocomplete="off">
+            <span class="privacy-label">Change Password</span>
+            <label for="current-password">Current Password</label>
+            <input type="password" id="current-password" required autocomplete="current-password" />
+            <label for="new-password">New Password</label>
+            <input type="password" id="new-password" required minlength="6" autocomplete="new-password" />
+            <button type="submit">Change Password</button>
+            <div class="message" id="pw-message"></div>
+          </form>
+        </div>
+      </section>
+      <!-- Manage Section -->
+      <section id="manage-section" class="tab-section">
+        <div class="manage-main-center">
+          <div class="manage-title">Account Management</div>
+          <div class="verified-status-box" id="manage-verified-status-box">
+            <span id="manage-verified-status-icon"></span>
+            <span id="manage-verified-status-text"></span>
+            <button id="manage-resend-verif-btn" style="display:none;">Resend Verification Email</button>
+            <span class="send-verif-msg" id="manage-send-verif-msg"></span>
+          </div>
+          <div class="manage-row">
+            <span class="manage-label">Billing Status:</span>
+            <span class="manage-value" id="billing-status"></span>
+          </div>
+          <div class="manage-row">
+            <span class="manage-label">Subscription:</span>
+            <span class="manage-value" id="subscription-status"></span>
+          </div>
+          <div class="sub-box" id="sub-details" style="display:none;">
+            <div><b>Plan:</b> <span id="plan-name"></span></div>
+            <div><b>Renewal:</b> <span id="plan-renewal"></span></div>
+            <div><b>Payment Method:</b> <span id="plan-method"></span></div>
+            <div><b>Price:</b> <span id="plan-price"></span></div>
+            <div><b>Kiosk Count:</b> <span id="plan-kiosk"></span></div>
+          </div>
+          <div class="divider"></div>
+          <div class="payments-section">
+            <h2>Payment History</h2>
+            <table id="payments-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th>Method</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="payments-tbody">
+                <tr><td colspan="4" style="text-align:center;color:#888;">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Firebase config...
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.firebasestorage.app",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const storage = firebase.storage();
+
+    document.getElementById('settings-back-btn').onclick = function() {
+      window.location.href = '../Browse/browse.html';
+    };
+
+
+     // Profile Picture Logic
+  const profilePic = document.getElementById('profile-picture');
+  const profilePicInput = document.getElementById('profile-pic-upload');
+  const profilePicLabel = document.querySelector('.profile-pic-upload-label');
+  const defaultPic = "https://ui-avatars.com/api/?name=User&background=dae6ff&color=3d4ba3";
+
+ profilePicInput.addEventListener('change', async function() {
+  const file = this.files[0];
+  if (!file) return;
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    Swal.fire('Not signed in', 'Please sign in to update your profile picture.', 'error');
+    return;
+  }
+  if (!file.type.startsWith('image/')) {
+    Swal.fire('Invalid file', 'Please select an image file.', 'error');
+    return;
+  }
+  Swal.fire({ title: 'Uploading...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+  try {
+    const storageRef = firebase.storage().ref();
+    const ext = file.name.split('.').pop();
+    const imgRef = storageRef.child(`user-profile-pics/${user.uid}.${ext}`);
+    await imgRef.put(file);
+    const url = await imgRef.getDownloadURL();
+    // Update both pfpurl in DB and photoURL in Auth
+    await firebase.database().ref("users/" + user.uid).update({ pfpurl: url });
+    try { await user.updateProfile({ photoURL: url }); } catch(e){}
+    profilePic.src = url;
+    Swal.fire('Uploaded!', 'Profile picture updated.', 'success');
+  } catch (err) {
+    Swal.fire('Upload failed', err.message, 'error');
+  }
+});
+
+  // Show the user's profile pic on load
+  // Show the user's profile pic on load
+firebase.auth().onAuthStateChanged(function(user) {
+  const defaultPfpUrl = "https://firebasestorage.googleapis.com/v0/b/iot-web-58054.firebasestorage.app/o/pfp%2Fdefault.png?alt=media&token=5626551d-e7cf-45f6-9b23-f52ede3f55a1";
+  if (user) {
+    const userId = user.uid;
+    // Try to get pfpurl from Realtime Database first
+    firebase.database().ref("users/" + userId + "/pfpurl").once("value").then(snapshot => {
+      const dbPfpUrl = snapshot.val();
+      if (dbPfpUrl) {
+        profilePic.src = dbPfpUrl;
+      } else if (user.photoURL) {
+        profilePic.src = user.photoURL;
+      } else {
+        profilePic.src = defaultPfpUrl;
+      }
+    }).catch(() => {
+      // Fallback to Auth or default if DB fails
+      profilePic.src = user.photoURL || defaultPfpUrl;
+    });
+  } else {
+    // User not signed in
+    profilePic.src = defaultPfpUrl;
+  }
+});
+    // TAB LOGIC: Only one section visible at a time, smooth scroll
+    const sectionMap = {
+      'drawer-account': 'account-section',
+      'drawer-privacy': 'privacy-section',
+      'drawer-manage': 'manage-section'
+    };
+    const drawerItems = document.querySelectorAll('.drawer-item');
+    drawerItems.forEach(item => {
+      item.addEventListener('click', function () {
+        drawerItems.forEach(d => d.classList.remove('selected'));
+        this.classList.add('selected');
+        Object.values(sectionMap).forEach(id => {
+          document.getElementById(id).classList.remove('active');
+        });
+        const targetSectionId = sectionMap[this.id];
+        const targetSection = document.getElementById(targetSectionId);
+        targetSection.classList.add('active');
+        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      item.addEventListener('keydown', function (e) {
+        if (e.key === "Enter" || e.key === " ") this.click();
+      });
+    });
+
+    // Editable fields logic for Account Section (original)
+    function editField(field) {
+      const row = document.getElementById(field + '-value').parentElement;
+      row.classList.add('editing');
+      document.getElementById(field + '-input').style.display = 'inline-block';
+      document.getElementById(field + '-input').focus();
+    }
+    async function saveField(field) {
+      const row = document.getElementById(field + '-value').parentElement;
+      const input = document.getElementById(field + '-input');
+      const value = input.value;
+      document.getElementById(field + '-value').textContent = value;
+      row.classList.remove('editing');
+      input.style.display = 'none';
+
+      // Save to Firebase
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+      const userId = user.uid;
+      let updateObj = {};
+      switch(field) {
+        case 'businessName': updateObj['businessName'] = value; break;
+        case 'product': updateObj['product'] = value; break;
+        case 'tagline': updateObj['tagline'] = value; break;
+        case 'purpose': updateObj['fundUsage'] = value; break;
+        case 'experience': updateObj['experience'] = value; break;
+        case 'location': updateObj['location'] = value; break;
+        case 'awards': updateObj['awards'] = value; break;
+        case 'partnership': updateObj['partnership'] = value; break;
+        case 'facebook': updateObj['facebook'] = value; break;
+        case 'youtube': updateObj['youtube'] = value; break;
+        case 'messenger': updateObj['messenger'] = value; break;
+        default: return;
+      }
+      await firebase.database().ref("users/" + userId).update(updateObj);
+    }
+    function cancelEdit(field) {
+      const row = document.getElementById(field + '-value').parentElement;
+      const input = document.getElementById(field + '-input');
+      input.value = document.getElementById(field + '-value').textContent;
+      row.classList.remove('editing');
+      input.style.display = 'none';
+    }
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.style.display = 'inline-block';
+    });
+
+    // New: SweetAlert2 modal-based editing for Account Section
+    async function editFieldModal(field) {
+      // Get current value
+      const valueSpan = document.getElementById(field + '-value');
+      let currentValue = valueSpan.textContent === "Not set" || valueSpan.textContent === "Loading..." ? "" : valueSpan.textContent;
+
+      // Define titles/placeholders
+      const fieldNames = {
+        businessName: 'Business Name',
+        product: 'Product',
+        tagline: 'Tagline',
+        purpose: 'Purpose',
+        experience: 'Experience',
+        location: 'Location',
+        awards: 'Awards',
+        partnership: 'What you look for a partnership?',
+        facebook: 'Facebook',
+        youtube: 'Youtube',
+        messenger: 'Messenger'
+      };
+      const placeholder = "Enter " + (fieldNames[field] || field);
+
+      // Show SweetAlert2 modal
+      const { value: newValue } = await Swal.fire({
+        title: `Edit ${fieldNames[field] || field}`,
+        input: 'text',
+        inputValue: currentValue,
+        showCancelButton: true,
+        confirmButtonText: 'Save',
+        cancelButtonText: 'Cancel',
+        inputPlaceholder: placeholder,
+        customClass: {
+          confirmButton: 'swal2-confirm custom-save-btn',
+          cancelButton: 'swal2-cancel custom-cancel-btn'
+        },
+        inputValidator: (val) => {
+          if (val === "") return 'Value cannot be empty';
+        }
+      });
+
+      // On "Save"
+      if (newValue !== undefined) {
+        valueSpan.textContent = newValue;
+        // Save to Firebase
+        const user = firebase.auth().currentUser;
+        if (!user) {
+          Swal.fire('Not signed in', 'Please sign in to save changes.', 'error');
+          return;
+        }
+        const userId = user.uid;
+        let updateObj = {};
+        switch(field) {
+          case 'businessName': updateObj['businessName'] = newValue; break;
+          case 'product': updateObj['product'] = newValue; break;
+          case 'tagline': updateObj['tagline'] = newValue; break;
+          case 'purpose': updateObj['fundUsage'] = newValue; break;
+          case 'experience': updateObj['experience'] = newValue; break;
+          case 'location': updateObj['location'] = newValue; break;
+          case 'awards': updateObj['awards'] = newValue; break;
+          case 'partnership': updateObj['partnership'] = newValue; break;
+          case 'facebook': updateObj['facebook'] = newValue; break;
+          case 'youtube': updateObj['youtube'] = newValue; break;
+          case 'messenger': updateObj['messenger'] = newValue; break;
+          default: return;
+        }
+        await firebase.database().ref("users/" + userId).update(updateObj);
+        Swal.fire('Saved!', `${fieldNames[field] || field} updated successfully.`, 'success');
+      }
+    }
+
+    // Payments display logic
+    function renderPayments(userId) {
+      const tbody = document.getElementById('payments-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">Loading...</td></tr>';
+      firebase.database().ref("payments").orderByChild("userId").equalTo(userId).once("value")
+        .then(snapshot => {
+          const payments = [];
+          snapshot.forEach(childSnap => {
+            payments.push(childSnap.val());
+          });
+          if (payments.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#aaa;">No payments found.</td></tr>';
+            return;
+          }
+          tbody.innerHTML = payments.sort((a, b) => new Date(b.paymentDate) - new Date(a.paymentDate))
+            .map(payment => `
+              <tr>
+                <td>${(new Date(payment.paymentDate)).toLocaleString()}</td>
+                <td>${payment.amount} ${payment.currency}</td>
+                <td>${payment.paymentMethod}</td>
+                <td style="color:${payment.status === 'success' ? '#24974e' : '#e53935'};">${payment.status}</td>
+              </tr>
+            `).join('');
+        });
+    }
+
+    // Load user data from Firebase for Account, Manage, Privacy
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        const userId = user.uid;
+        const ref = firebase.database().ref("users/" + userId);
+        ref.once("value").then(snapshot => {
+          let data = snapshot.val() || {};
+          const defaultData = {
+            businessName: "Not set", product: "Not set", tagline: "",
+            fundUsage: "", experience: "", location: "", awards: "",
+            partnership: "", facebook: "", youtube: "", messenger: "",
+            verified: false
+          };
+          let needsUpdate = false;
+          for (const key in defaultData) {
+            if (!(key in data)) {
+              data[key] = defaultData[key];
+              needsUpdate = true;
+            }
+          }
+          if (needsUpdate) ref.update(data);
+
+          // Fill Account fields
+          document.getElementById("business-name-value").textContent = data.businessName || "Not set";
+          document.getElementById("business-name-input").value = data.businessName || "";
+          document.getElementById("product-value").textContent = data.product || "Not set";
+          document.getElementById("product-input").value = data.product || "";
+          document.getElementById("tagline-value").textContent = data.tagline || "Not set";
+          document.getElementById("tagline-input").value = data.tagline || "";
+          document.getElementById("purpose-value").textContent = data.fundUsage || "Not set";
+          document.getElementById("purpose-input").value = data.fundUsage || "";
+          document.getElementById("experience-value").textContent = data.experience || "Not set";
+          document.getElementById("experience-input").value = data.experience || "";
+          document.getElementById("location-value").textContent = data.location || "Not set";
+          document.getElementById("location-input").value = data.location || "";
+          document.getElementById("awards-value").textContent = data.awards || "Not set";
+          document.getElementById("awards-input").value = data.awards || "";
+          document.getElementById("partnership-value").textContent = data.partnership || "Not set";
+          document.getElementById("partnership-input").value = data.partnership || "";
+          document.getElementById("facebook-value").textContent = data.facebook || "Not set";
+          document.getElementById("facebook-input").value = data.facebook || "";
+          document.getElementById("youtube-value").textContent = data.youtube || "Not set";
+          document.getElementById("youtube-input").value = data.youtube || "";
+          document.getElementById("messenger-value").textContent = data.messenger || "Not set";
+          document.getElementById("messenger-input").value = data.messenger || "";
+
+          // MANAGE VERIFICATION: verified must be true in /users/{uid}/verified
+          const manageVerifiedStatusBox = document.getElementById("manage-verified-status-box");
+          const manageVerifiedStatusText = document.getElementById("manage-verified-status-text");
+          const manageVerifiedStatusIcon = document.getElementById("manage-verified-status-icon");
+          const resendBtn = document.getElementById("manage-resend-verif-btn");
+          const sendMsg = document.getElementById("manage-send-verif-msg");
+          if (data.verified === true) {
+            manageVerifiedStatusBox.classList.add("verified");
+            manageVerifiedStatusIcon.innerHTML = "&#x2714;";
+            manageVerifiedStatusText.textContent = "ID Verified";
+            resendBtn.style.display = "none";
+            sendMsg.textContent = "";
+          } else {
+            manageVerifiedStatusBox.classList.remove("verified");
+            manageVerifiedStatusIcon.innerHTML = "&#10060;";
+            manageVerifiedStatusText.textContent = "ID Not Verified";
+            resendBtn.style.display = "inline-block";
+            sendMsg.textContent = "";
+            resendBtn.onclick = async function() {
+              await firebase.database().ref("users/" + userId).update({verified:true});
+              manageVerifiedStatusBox.classList.add("verified");
+              manageVerifiedStatusIcon.innerHTML = "&#x2714;";
+              manageVerifiedStatusText.textContent = "Account Verified";
+              resendBtn.style.display = "none";
+              sendMsg.style.color = "#24974e";
+              sendMsg.textContent = "Account marked as verified!";
+            };
+          }
+        });
+        renderPayments(user.uid);
+      } else {
+        [
+          "business-name-value","product-value","tagline-value","purpose-value",
+          "experience-value","location-value","awards-value","partnership-value",
+          "facebook-value","youtube-value","messenger-value"
+        ].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = "Not signed in";
+        });
+        document.getElementById("sub-details").style.display = "none";
+        const tbody = document.getElementById('payments-tbody');
+        if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#aaa;">Sign in to view payments.</td></tr>';
+        // Manage verification UI
+        const manageVerifiedStatusBox = document.getElementById("manage-verified-status-box");
+        const manageVerifiedStatusText = document.getElementById("manage-verified-status-text");
+        const manageVerifiedStatusIcon = document.getElementById("manage-verified-status-icon");
+        const resendBtn = document.getElementById("manage-resend-verif-btn");
+        const sendMsg = document.getElementById("manage-send-verif-msg");
+        manageVerifiedStatusBox.classList.remove("verified");
+        manageVerifiedStatusIcon.innerHTML = "";
+        manageVerifiedStatusText.textContent = "Not signed in";
+        resendBtn.style.display = "none";
+        sendMsg.textContent = "";
+      }
+
+      // Only use subscriptions for billing/subscription display
+      const billingStatusEl = document.getElementById("billing-status");
+      const subscriptionStatusEl = document.getElementById("subscription-status");
+      const planNameEl = document.getElementById("plan-name");
+      const planRenewalEl = document.getElementById("plan-renewal");
+      const planMethodEl = document.getElementById("plan-method");
+      const planPriceEl = document.getElementById("plan-price");
+      const planKioskEl = document.getElementById("plan-kiosk");
+      if (user) {
+        firebase.database().ref("subscriptions").orderByChild("userId").equalTo(user.uid).once("value")
+          .then(snapshot => {
+            let latestActiveSub = null;
+            snapshot.forEach(childSnap => {
+              const sub = childSnap.val();
+              if (sub.status === "active") {
+                if (!latestActiveSub || new Date(sub.endDate) > new Date(latestActiveSub.endDate)) {
+                  latestActiveSub = sub;
+                }
+              }
+            });
+            if (latestActiveSub) {
+              billingStatusEl.textContent = "Active / Paid";
+              subscriptionStatusEl.textContent = latestActiveSub.planType || "Active";
+              if (planNameEl) planNameEl.textContent = latestActiveSub.planType || "—";
+              if (planRenewalEl) planRenewalEl.textContent = latestActiveSub.nextPaymentDate
+                ? new Date(latestActiveSub.nextPaymentDate).toLocaleString()
+                : "—";
+              if (planMethodEl) planMethodEl.textContent = latestActiveSub.paymentMethod || "—";
+              if (planPriceEl) planPriceEl.textContent = latestActiveSub.price
+                ? latestActiveSub.price.toLocaleString() : "—";
+              if (planKioskEl) planKioskEl.textContent = latestActiveSub.kioskCount || "—";
+              document.getElementById("sub-details").style.display = "flex";
+            } else {
+              billingStatusEl.textContent = "Free / Not set";
+              subscriptionStatusEl.textContent = "None";
+              if (planNameEl) planNameEl.textContent = "—";
+              if (planRenewalEl) planRenewalEl.textContent = "—";
+              if (planMethodEl) planMethodEl.textContent = "—";
+              if (planPriceEl) planPriceEl.textContent = "—";
+              if (planKioskEl) planKioskEl.textContent = "—";
+              document.getElementById("sub-details").style.display = "none";
+            }
+          });
+      } else {
+        billingStatusEl.textContent = "Not signed in";
+        subscriptionStatusEl.textContent = "Not signed in";
+        if (planNameEl) planNameEl.textContent = "—";
+        if (planRenewalEl) planRenewalEl.textContent = "—";
+        if (planMethodEl) planMethodEl.textContent = "—";
+        if (planPriceEl) planPriceEl.textContent = "—";
+        if (planKioskEl) planKioskEl.textContent = "—";
+        document.getElementById("sub-details").style.display = "none";
+      }
+
+      // Privacy Section - Verification and Password Change
+      const emailStatus = document.getElementById("email-status");
+      const verifiedStatus = document.getElementById("verified-status");
+      if (user) {
+        emailStatus.textContent = "Signed in as: " + user.email;
+        if (user.emailVerified) {
+          verifiedStatus.textContent = "Account Verified ✔";
+          verifiedStatus.classList.add("verified");
+          verifiedStatus.classList.remove("not-verified");
+        } else {
+          verifiedStatus.textContent = "Account Not Verified ✗";
+          verifiedStatus.classList.add("not-verified");
+          verifiedStatus.classList.remove("verified");
+        }
+      } else {
+        emailStatus.textContent = "Not signed in.";
+        verifiedStatus.textContent = "";
+      }
+    });
+
+    // Password change logic (Privacy section)
+    document.getElementById("change-password-form").onsubmit = async function(e) {
+      e.preventDefault();
+      const user = firebase.auth().currentUser;
+      const currentPw = document.getElementById("current-password").value;
+      const newPw = document.getElementById("new-password").value;
+      const msg = document.getElementById("pw-message");
+      msg.textContent = "";
+      msg.className = "message";
+      if (!user || !user.email) {
+        msg.textContent = "Not signed in."; msg.className += " error"; return;
+      }
+      try {
+        const cred = firebase.auth.EmailAuthProvider.credential(user.email, currentPw);
+        await user.reauthenticateWithCredential(cred);
+        await user.updatePassword(newPw);
+        msg.textContent = "Password successfully changed!";
+        msg.className += " success";
+        document.getElementById("current-password").value = "";
+        document.getElementById("new-password").value = "";
+      } catch (err) {
+        msg.textContent = err.message; msg.className += " error";
+      }
+    };
+  </script>
+</body>
+</html>

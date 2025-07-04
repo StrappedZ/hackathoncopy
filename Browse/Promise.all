@@ -1,0 +1,65 @@
+const categories = [
+  "Fashion & Apparel",
+  "Electronics",
+  "Home & Living",
+  "Beauty & Personal Care",
+  "Food & Grocery",
+  "Toys & Games",
+  "Pet Supplies",
+  "Fitness & Sports",
+  "Books & Stationery",
+  "Automotive",
+  "Services"
+];
+
+async function loadAllCategories(search = '') {
+  const container = document.getElementById('all-categories');
+  container.innerHTML = '';
+
+  // Render empty sections right away for UX (optional)
+  categories.forEach(cat => {
+    container.insertAdjacentHTML('beforeend', `
+      <section class="category-section" id="cat-section-${cat.replace(/[^a-z]/gi, '')}">
+        <div class="category-title">${cat}</div>
+        <div class="category-carousel"><div class="loading">Loading...</div></div>
+      </section>
+    `);
+  });
+
+  // Launch all queries in parallel
+  const promises = categories.map(cat =>
+    db.collection("products").where("category", "==", cat).limit(20).get()
+  );
+
+  const snapshots = await Promise.all(promises);
+
+  snapshots.forEach((snapshot, idx) => {
+    const cat = categories[idx];
+    const secId = `cat-section-${cat.replace(/[^a-z]/gi, '')}`;
+    const sec = document.getElementById(secId);
+    let html = '';
+    let found = false;
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      if (
+        !search ||
+        (data.name && data.name.toLowerCase().includes(search)) ||
+        (data.description && data.description.toLowerCase().includes(search))
+      ) {
+        found = true;
+        html += `
+          <div class="product-card">
+            <img src="${data.imageUrl || 'https://via.placeholder.com/80'}" alt="${data.name}">
+            <div class="product-title">${data.name}</div>
+            <div class="product-desc">${data.description || ""}</div>
+          </div>
+        `;
+      }
+    });
+    if (!found) {
+      html = `<div style="color:#757575;font-style:italic;padding:20px 0;">No products found.</div>`;
+    }
+    // Replace loading with actual products
+    sec.querySelector('.category-carousel').innerHTML = html;
+  });
+}

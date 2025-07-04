@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scale Up - Landing</title>
+  <link rel="stylesheet" href="landing-center-style/landing-center-base.css">
+  <link rel="stylesheet" href="landing-center-style/landing-center-mobile.css">
+  <link rel="stylesheet" href="landing-center-style/landing-center-tablet.css">
+  <link rel="stylesheet" href="landing-center-style/landing-center-desktop.css">
+  <!-- canvas-confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <style>
+    
+    .zoom-blur-out {
+      animation: zoomBlurOut 0.8s cubic-bezier(.4,0,.2,1) forwards;
+      
+    }
+    @keyframes zoomBlurOut {
+      0% {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1);
+      }
+      60% {
+        opacity: 0.8;
+        filter: blur(8px);
+        transform: scale(1.06);
+      }
+      100% {
+        opacity: 0;
+        filter: blur(24px);
+        transform: scale(1.12);
+      }
+    }
+
+    /* Slow tilting animation for highlight-text */
+    .tilt {
+      display: inline-block;
+      animation: tilt 2.8s cubic-bezier(.62,-0.01,.34,1.01) infinite alternate;
+      transform-origin: 50% 60%;
+    }
+    @keyframes tilt {
+      0%   { transform: rotate(-6deg);}
+      50%  { transform: rotate(7deg);}
+      100% { transform: rotate(-6deg);}
+    }
+  </style>
+</head>
+<body>
+  <div id="landingWrap">
+    <header class="landing-center-navbar">
+      <div class="landing-center-logo-header">
+        <img class="landing-center-logo-img" src="images/logo.svg"  alt="Scale Up Logo">
+        
+      </div>
+    </header>
+    <main class="landing-center-main">
+      <div class="landing-center-content">
+        <div class="landing-center-bigtext">
+          <span class="bigtext-line">Need Capital?</span>
+          <span class="bigtext-line">Share Your</span>
+          <span class="bigtext-line">Product Here!</span>
+        </div>
+        <div class="landing-center-highlight">
+          <span class="highlight-text tilt">Taps to begin your journey</span>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="secret.js"></script>
+  <script>
+    document.body.addEventListener("click", function () {
+      // Zoom and blur the entire header + main content together
+      document.getElementById("landingWrap").classList.add("zoom-blur-out");
+      // Confetti burst!
+      confetti({
+        particleCount: 130,
+        spread: 90,
+        origin: { y: 0.6 },
+        colors: ['#308ee0', '#e9c46a', '#e76f51', '#2a9d8f', '#f4a261', '#264653'],
+        scalar: 1.1,
+        ticks: 170
+      });
+      setTimeout(() => {
+        confetti({
+          particleCount: 80,
+          spread: 120,
+          origin: { y: 0.4 },
+          colors: ['#308ee0', '#e9c46a', '#e76f51', '#2a9d8f', '#f4a261', '#264653'],
+          scalar: 1.0,
+          ticks: 120
+        });
+      }, 200);
+
+      // Redirect after animation
+      setTimeout(function () {
+        window.location.href = "create-account.html";
+      }, 1000);
+    }, { once: true }); // Prevent double triggers
+  </script>
+</body>
+</html>

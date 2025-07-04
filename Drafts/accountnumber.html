@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Get User Account Number</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f7f8fc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .account-box {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 24px #2222aa11;
+      padding: 2.5em 2.2em 2em 2.2em;
+      max-width: 350px;
+      width: 100%;
+      text-align: center;
+    }
+    .account-title {
+      font-size: 1.32em;
+      color: #2B1F6F;
+      font-weight: 600;
+      margin-bottom: 1.1em;
+      letter-spacing: 0.01em;
+    }
+    label {
+      display: block;
+      text-align: left;
+      color: #444;
+      margin-bottom: 0.5em;
+      font-size: 1.04em;
+      font-weight: 500;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 1em 0.9em;
+      font-size: 1.13em;
+      border: 1.5px solid #bfc1cc;
+      border-radius: 8px;
+      margin-bottom: 1.3em;
+      box-sizing: border-box;
+      background: #f4f6fa;
+      transition: border 0.2s;
+    }
+    input[type="text"]:focus {
+      border: 2px solid #2B1F6F;
+      outline: none;
+      background: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 1em 0;
+      background: #2B1F6F;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.13em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover, button:focus {
+      background: #232526;
+    }
+    .result {
+      margin-top: 1.4em;
+      font-size: 1.11em;
+      color: #21653c;
+      font-weight: 500;
+      word-break: break-all;
+    }
+    .error {
+      color: #e53935 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="account-box">
+    <div class="account-title">Find Your Account Number</div>
+    <form id="accountForm" autocomplete="off">
+      <label for="userEmail">Enter your email to get your account number</label>
+      <input type="text" id="userEmail" placeholder="e.g. you@email.com" required>
+      <button type="submit">Get Account Number</button>
+    </form>
+    <div class="result" id="resultBox"></div>
+  </div>
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const database = firebase.database();
+
+    document.getElementById('accountForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('userEmail').value.trim().toLowerCase();
+      const resultBox = document.getElementById('resultBox');
+      resultBox.textContent = "Searching...";
+      resultBox.classList.remove('error');
+      if (!email) {
+        resultBox.textContent = "Please enter your email.";
+        resultBox.classList.add('error');
+        return;
+      }
+      // Query the users node for the email
+      database.ref('users').orderByChild('email').equalTo(email).once('value', function(snapshot) {
+        if (snapshot.exists()) {
+          const userObj = Object.values(snapshot.val())[0];
+          if (userObj.accountNumber) {
+            resultBox.textContent = "Your account number: " + userObj.accountNumber;
+            resultBox.classList.remove('error');
+          } else {
+            resultBox.textContent = "Account number not found for this user.";
+            resultBox.classList.add('error');
+          }
+        } else {
+          resultBox.textContent = "Account not found. Please check your email.";
+          resultBox.classList.add('error');
+        }
+      }, function(error) {
+        resultBox.textContent = "Error: " + error.message;
+        resultBox.classList.add('error');
+      });
+    });
+  </script>
+</body>
+</html>

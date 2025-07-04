@@ -1,0 +1,53 @@
+    body {
+      margin: 0;
+      background-color: var(--background);
+      font-family: 'IM FELL Great Primer', serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      height: 100vh;
+      text-align: center;
+      padding: 2vh 5vw;
+      cursor: not-allowed; /* initially not clickable */
+    }
+    .header {
+      font-family: 'Lilita One', cursive;
+      font-size: 4vw;
+      letter-spacing: 0.1em;
+      color: #000;
+      text-shadow: 0px 4px 4px rgba(0,0,0,0.25);
+      margin-bottom: 2vh;
+    }
+    .section {
+      margin: 2vh auto;
+      max-width: 1000px;
+      font-size: 2vw;
+      letter-spacing: 0.1em;
+      line-height: 1.4;
+      color: #000;
+    }
+    .numbered {
+      font-family: 'IM FELL Great Primer', serif;
+      font-size: 2.2vw;
+      margin-top: 3vh;
+      font-weight: bold;
+    }
+    .desc {
+      font-family: 'Inder', sans-serif;
+      font-size: 1.8vw;
+      letter-spacing: 0.1em;
+      margin-top: 1vh;
+    }
+    .divider {
+      width: 90%;
+      border-top: 1px solid #000;
+      margin: 3vh auto;
+    }
+    @media (max-width: 768px) {
+      .header { font-size: 7vw; }
+      .section { font-size: 4vw; }
+      .numbered { font-size: 5vw; }
+      .desc { font-size: 4vw; }
+    }

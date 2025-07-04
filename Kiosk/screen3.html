@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="theme.css">
+  <meta charset="UTF-8" />
+  <title>ScaleUp - Log In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inder&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Kiosk Css/screen3.css">
+
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>Log In</h1>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <div class="forgot" id="forgotPassword">Forgot Password?</div>
+    <button class="login-button" id="loginButton">Log In</button>
+  </div>
+
+  <div class="back-chevron" id="backButton" aria-label="Go Back">
+    <svg class="back-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <polyline points="20,8 12,16 20,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <script>
+    document.getElementById("loginButton").addEventListener("click", function() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Please fill in both email and password.");
+        return;
+      }
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          alert("✅ Login successful!");
+          window.location.href = "kiosk.html";  // you can change destination if needed
+        })
+        .catch(error => {
+          alert("❌ " + ("Invalid Credentials, Please login again"));
+        });
+    });
+
+    document.getElementById("forgotPassword").addEventListener("click", function() {
+      const email = document.getElementById("email").value.trim();
+      if (!email) {
+        alert("Enter your email above first.");
+        return;
+      }
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          alert("✅ Password reset email sent!");
+        })
+        .catch(error => {
+          alert("❌ " + ("Invalid Credentials, Please login again"));
+        });
+    });
+
+    document.getElementById("backButton").addEventListener("click", function() {
+      window.location.href = "screen2.html";
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+/* Pet Supplies */
+.petsupplies .category-carousel {
+  background: linear-gradient(90deg, #fef9c3 0%, #bbf7d0 100%);
+  border-radius: 18px;
+  border: 2.5px solid #34d399;
+  box-shadow: 0 8px 32px 0 #34d39933;
+}
+
+/* Automotive */
+.automative .category-carousel {
+  background: linear-gradient(90deg, #e0e7ff 0%, #f3e8ff 100%);
+  border-radius: 18px;
+  border: 2.5px solid #818cf8;
+  box-shadow: 0 8px 32px 0 #818cf833;
+}
+
+/* Fitness & Sports */
+.fns .category-carousel {
+  background: linear-gradient(90deg, #f0abfc 0%, #a7f3d0 100%);
+  border-radius: 18px;
+  border: 2.5px solid #06b6d4;
+  box-shadow: 0 8px 32px 0 #06b6d433;
+}
+
+/* Food & Grocery */
+.fng .category-carousel {
+  background: linear-gradient(90deg, #fde68a 0%, #fcd34d 100%);
+  border-radius: 18px;
+  border: 2.5px solid #eab308;
+  box-shadow: 0 8px 32px 0 #eab30833;
+}
+
+/* Home & Living */
+.hnl .category-carousel {
+  background: linear-gradient(90deg, #c4b5fd 0%, #e0e7ff 100%);
+  border-radius: 18px;
+  border: 2.5px solid #a78bfa;
+  box-shadow: 0 8px 32px 0 #a78bfa33;
+}
+
+/* Beauty & Personal Care */
+.bnpc .category-carousel {
+  background: linear-gradient(90deg, #f9a8d4 0%, #fef9c3 100%);
+  border-radius: 18px;
+  border: 2.5px solid #f472b6;
+  box-shadow: 0 8px 32px 0 #f472b633;
+}
+
+/* Fashion & Apparel */
+.fna .category-carousel {
+  background: linear-gradient(90deg, #f3e8ff 0%, #fbcfe8 100%);
+  border-radius: 18px;
+  border: 2.5px solid #a21caf;
+  box-shadow: 0 8px 32px 0 #a21caf33;
+}
+
+/* Toys & Games */
+.tng .category-carousel {
+  background: linear-gradient(90deg, #fce7f3 0%, #f9fafb 100%);
+  border-radius: 18px;
+  border: 2.5px solid #f472b6;
+  box-shadow: 0 8px 32px 0 #f472b633;
+}
+
+/* Example: Make headings themed for each section */
+.petsupplies .category-title { color: #059669; }
+.automative .category-title { color: #3730a3; }
+.fns .category-title { color: #0e7490; }
+.fng .category-title { color: #b45309; }
+.hnl .category-title { color: #6d28d9; }
+.bnpc .category-title { color: #db2777; }
+.fna .category-title { color: #be185d; }
+.tng .category-title { color: #be185d; }

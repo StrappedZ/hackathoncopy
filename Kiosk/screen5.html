@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="theme.css">
+  <meta charset="UTF-8" />
+  <title>ScaleUp - Business Details</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=IM+FELL+Great+Primer&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Kiosk Css/screen5.css">
+
+
+</head>
+<body>
+
+  <div class="form-container">
+    <div class="header">Tell Us About Your Business</div>
+    <input type="text" placeholder="Business Name" class="input-field" id="businessName">
+    <input type="text" placeholder="Product" class="input-field" id="product">
+    <input type="text" placeholder="Tagline" class="input-field" id="tagline">
+  </div>
+
+  <!-- Forward Chevron Button (Bottom Right) -->
+  <div class="forward-chevron" id="nextButton" aria-label="Go Forward">
+    <svg class="forward-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <polyline points="12,8 20,16 12,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <script>
+    // Prefill fields from localStorage if present
+    document.getElementById("businessName").value = localStorage.getItem("businessName") || "";
+    document.getElementById("product").value = localStorage.getItem("product") || "";
+    document.getElementById("tagline").value = localStorage.getItem("tagline") || "";
+
+    document.getElementById("nextButton").addEventListener("click", () => {
+      const businessName = document.getElementById("businessName").value.trim();
+      const product = document.getElementById("product").value.trim();
+      const tagline = document.getElementById("tagline").value.trim();
+
+      // save to localStorage
+      localStorage.setItem("businessName", businessName);
+      localStorage.setItem("product", product);
+      localStorage.setItem("tagline", tagline);
+
+      window.location.href = "screen6.html";
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+.category-carousel {
+  background: linear-gradient(90deg, #dbeafe 0%, #e0e7ff 100%);
+}
+.product-card {
+  border: 2px solid #a5b4fc;
+  box-shadow: 0 4px 16px rgba(91,108,255,0.11);
+}
+.product-card .product-title {
+  color: #3730a3;
+}

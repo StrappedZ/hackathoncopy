@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="theme.css">
+  <meta charset="UTF-8" />
+  <title>ScaleUp - Sample Received</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=IM+FELL+Great+Primer&family=Inder&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Kiosk Css/screen9.css">
+
+
+</head>
+<body id="screen9">
+  <div class="header">Sample Received! Get Ready to Grow!</div>
+  <div class="section">
+    Thank you for submitting your product sample and details! Our team will now review your submission and create your powerful UpScale campaign page.
+  </div>
+  <div class="divider"></div>
+  <div class="numbered">1. Professional Photos:</div>
+  <div class="desc">We'll take high-quality photos of your product to make it shine.</div>
+  <div class="numbered">2. Compelling Story:</div>
+  <div class="desc">We'll craft your business story and funding purpose into an engaging campaign.</div>
+  <div class="numbered">3. Campaign Live!</div>
+  <div class="desc">We'll notify you via SMS when your campaign is ready and live on our website: ScaleUp.ph</div>
+  <div class="divider"></div>
+  <div class="section">
+    Once your campaign is live, you can easily track its progress, share it with your network, and engage with your supporters directly on our website.
+  </div>
+
+  <script>
+    const body = document.getElementById("screen9");
+    setTimeout(() => {
+      body.style.cursor = "pointer"; // make clickable
+      body.addEventListener("click", () => {
+        window.location.href = "kiosk.html";
+      });
+    }, 8000); // 8 seconds
+  </script>
+</body>
+</html>

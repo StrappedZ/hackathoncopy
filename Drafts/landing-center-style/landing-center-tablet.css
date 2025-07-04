@@ -1,0 +1,27 @@
+@media (min-width: 600px) and (max-width: 1023px) {
+  :root {
+    --logo-size: 18px;
+    --font-logo: 700 1.7rem var(--font-family);
+    --font-big: 900 clamp(1.8rem, 12vw, 5.5rem) var(--font-family);
+    --main-gap: 28px;
+  }
+  .landing-center-navbar {
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+  }
+  .landing-center-bigtext {
+    width: 80vw;
+    max-width: 700px;
+    min-width: 180px;
+    margin: 0 0 2vh 0;
+  }
+
+  .bigtext-line {
+    font-weight: 900 !important; /* Make it extra bold on tablet */
+  }
+
+}
+
+
+
+  

@@ -1,0 +1,7 @@
+.fns .category-carousel {
+  background: linear-gradient(90deg, #f0abfc 0%, #a7f3d0 100%);
+  border-radius: 18px;
+  border: 2.5px solid #06b6d4;
+  box-shadow: 0 8px 32px 0 #06b6d433;
+}
+.fns .category-title { color: #0e7490; }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fingerprint Admin Panel</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7f7; }
+    table { border-collapse: collapse; width: 320px; margin-bottom: 2em; }
+    th, td { border: 1px solid #aaa; padding: 8px 10px; text-align: center; }
+    th { background: #444; color: #fff; }
+    tr.occupied { background: #e8ffe8; }
+    tr.free { background: #f0f0f0; color: #888; }
+    button { padding: 5px 12px; border-radius: 4px; border: 1px solid #999; background: #ffdddd; cursor: pointer; }
+    button:disabled { background: #eee; color: #aaa; cursor: not-allowed; }
+    #status { margin-bottom: 1em; color: #1a7f1a; min-height: 1.5em; }
+  </style>
+</head>
+<body>
+  <h2>Fingerprint Slot Management</h2>
+  <div id="status"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>Slot ID</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="slots-body">
+      <tr><td colspan="3">Loading...</td></tr>
+    </tbody>
+  </table>
+  <script>
+    // Fetch ESP32 IP from Firebase dynamically
+    const firebaseIpUrl = 
+      'https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app/esp32_ip.json?auth=Xp9h6kSDEZ0u64EOkajsCA6EVaMLs3w7hc9r0W75';
+
+    let apiBase = ""; // Will be set after fetching the IP
+
+    async function getEsp32Ip() {
+      try {
+        const resp = await fetch(firebaseIpUrl);
+        if (!resp.ok) throw new Error("Failed to fetch ESP32 IP from Firebase");
+        let ip = await resp.json();
+        // Remove extra quotes if any (sometimes Firebase returns a quoted string)
+        ip = ip.replace(/^"+|"+$/g, "");
+        return ip;
+      } catch (err) {
+        setStatus("Failed to get ESP32 IP from Firebase", true);
+        throw err;
+      }
+    }
+
+    async function loadSlots() {
+      const tbody = document.getElementById("slots-body");
+      tbody.innerHTML = "<tr><td colspan='3'>Loading...</td></tr>";
+      if (!apiBase) {
+        setStatus("No ESP32 IP available.", true);
+        tbody.innerHTML = "<tr><td colspan='3'>No ESP32 IP</td></tr>";
+        return;
+      }
+      try {
+        const r = await fetch(apiBase + "/slots");
+        if (!r.ok) throw new Error("Failed to fetch slots");
+        const data = await r.json();
+        const { total, occupied, free } = data;
+        let rows = [];
+        for (let i = 1; i <= total; i++) {
+          const isOccupied = occupied.includes(i);
+          rows.push(`
+            <tr class="${isOccupied ? 'occupied' : 'free'}">
+              <td>${i}</td>
+              <td>${isOccupied ? "Occupied" : "Free"}</td>
+              <td>
+                ${isOccupied
+                  ? `<button onclick="deleteSlot(${i})" id="btn-del-${i}">Delete</button>`
+                  : `<button disabled>Delete</button>`
+                }
+              </td>
+            </tr>
+          `);
+        }
+        tbody.innerHTML = rows.join("");
+      } catch (e) {
+        tbody.innerHTML = "<tr><td colspan='3'>Error loading slots</td></tr>";
+        setStatus("Error loading slots", true);
+      }
+    }
+
+    async function deleteSlot(id) {
+      if (!confirm(`Delete fingerprint in slot ${id}?`)) return;
+      const btn = document.getElementById("btn-del-" + id);
+      btn.disabled = true;
+      setStatus("Deleting slot " + id + "...");
+      try {
+        const r = await fetch(apiBase + "/delete?id=" + id, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await r.json();
+        if (r.ok && data.result === "Success") {
+          setStatus(`Slot ${id} deleted successfully`);
+        } else {
+          setStatus(`Failed to delete slot ${id}: ${data.result || data.error}`, true);
+        }
+        await loadSlots();
+      } catch (e) {
+        setStatus("Network error", true);
+        btn.disabled = false;
+      }
+    }
+
+    function setStatus(msg, error) {
+      const div = document.getElementById("status");
+      div.textContent = msg;
+      div.style.color = error ? "#a00" : "#1a7f1a";
+    }
+
+    // When page loads, fetch the IP then load slots
+    (async () => {
+      setStatus("Getting ESP32 IP from Firebase...");
+      try {
+        const ip = await getEsp32Ip();
+        apiBase = "http://" + ip;
+        setStatus("ESP32 IP: " + ip);
+        await loadSlots();
+      } catch (err) {
+        setStatus("Could not load ESP32 IP. Check Firebase or device.", true);
+      }
+    })();
+  </script>
+</body>
+</html>

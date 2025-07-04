@@ -1,0 +1,7 @@
+.automative .category-carousel {
+  background: linear-gradient(90deg, #e0e7ff 0%, #f3e8ff 100%);
+  border-radius: 18px;
+  border: 2.5px solid #818cf8;
+  box-shadow: 0 8px 32px 0 #818cf833;
+}
+.automative .category-title { color: #3730a3; }

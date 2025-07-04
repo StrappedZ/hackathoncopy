@@ -1,0 +1,81 @@
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'IM FELL Great Primer', serif;
+      background-color: var(--background);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3vh;
+      padding: 0 5vw;
+    }
+
+    .header {
+      text-align: center;
+      font-family: 'Lilita One', cursive;
+      font-size: 3vw;
+      letter-spacing: 0.1em;
+      color: #000;
+      margin-bottom: 3vh;
+    }
+
+    .input-field {
+      width: 100%;
+      max-width: 600px;
+      padding: 2vh 2vw;
+      font-size: 1.5vw;
+      border: none;
+      border-radius: 15px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #333;
+    }
+
+    .input-field::placeholder {
+      color: #d3cfcf;
+      letter-spacing: 0.1em;
+    }
+
+    /* Use theme.css for .forward-chevron, but here for demo! */
+    .forward-chevron {
+      position: fixed;
+      right: 2vw;
+      bottom: 2vh;
+      width: 3.2em;
+      height: 3.2em;
+      background: var(--forwardbuttons);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 16px #0002, 0 1.5px 5px #2196f330;
+      cursor: pointer;
+      z-index: 10;
+      transition: box-shadow 0.15s, background 0.15s;
+      border: none;
+      outline: none;
+      padding: 0;
+    }
+    .forward-chevron:hover {
+      background: #f0f5fa;
+      box-shadow: 0 4px 24px #2196f355;
+    }
+    .forward-chevron .forward-icon {
+      width: 2em;
+      height: 2em;
+      display: block;
+    }
+    @media(max-width:768px) {
+      .header { font-size: 6vw; }
+      .input-field { font-size: 4vw; }
+      .forward-chevron { width: 5em; height: 5em; }
+      .forward-chevron .forward-icon { width: 3.5em; height: 3.5em; }
+    }

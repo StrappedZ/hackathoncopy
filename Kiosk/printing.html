@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Printing...</title>
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="Kiosk Css/printing.css">
+  <style>
+    body {
+      background: #161d27;
+      color: #fff;
+      font-family: 'Lilita One', 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 40px;
+    }
+    .loader {
+      border: 8px solid #222b3a;
+      border-top: 8px solid #ffbe3b;
+      border-radius: 50%;
+      width: 64px;
+      height: 64px;
+      animation: spin 1s linear infinite;
+      margin-bottom: 24px;
+      display: none;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+    .printing-text {
+      font-size: 2rem;
+      letter-spacing: 1px;
+      color: #ffbe3b;
+      margin-bottom: 32px;
+      display: none;
+    }
+    .receipt-preview {
+      background: #fff;
+      color: #222b3a;
+      padding: 24px 32px;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      font-family: 'IM FELL GreatPrimer', serif;
+      width: 320px;
+      margin-bottom: 40px;
+      display: none;
+    }
+    .receipt-preview h2 {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 8px;
+      font-family: 'Lilita One', sans-serif;
+      color: #161d27;
+      letter-spacing: 1px;
+    }
+    .receipt-line {
+      font-size: 1.1rem;
+      margin: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 3px;
+    }
+    .receipt-label {
+      font-weight: bold;
+      color: #3a465e;
+    }
+    .receipt-value {
+      text-align: right;
+      max-width: 140px;
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    .receipt-thankyou {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 1rem;
+      color: #666;
+      letter-spacing: 1px;
+    }
+    #userSelectContainer {
+      margin-bottom: 32px;
+    }
+    #userSelect {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      margin-right: 10px;
+    }
+    #printBtn {
+      padding: 10px 24px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      background: #ffbe3b;
+      color: #222b3a;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #printBtn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    @media (max-width: 400px) {
+      .receipt-preview {
+        width: 90vw;
+        padding: 12px 6vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-container">
+    <div id="userSelectContainer">
+      <select id="userSelect">
+        <option value="">Loading users...</option>
+      </select>
+      <button id="printBtn" disabled>Print</button>
+    </div>
+    <div class="loader" id="loader"></div>
+    <div class="printing-text" id="printingText">Printing...</div>
+    <div class="receipt-preview" id="receiptPreview">
+      <!-- Receipt preview will be inserted here by JS -->
+    </div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Thermal printer name
+    const deviceName = "POS58DE487";
+
+    // UI elements
+    const userSelect = document.getElementById('userSelect');
+    const printBtn = document.getElementById('printBtn');
+    const receiptPreview = document.getElementById('receiptPreview');
+    const loader = document.getElementById('loader');
+    const printingText = document.getElementById('printingText');
+    const userSelectContainer = document.getElementById('userSelectContainer');
+
+    let usersData = {};
+    let selectedUser = null;
+
+    // Load users from Firebase /users
+    db.ref("users").on("value", snapshot => {
+      const users = snapshot.val();
+      usersData = users || {};
+      userSelect.innerHTML = ""; // clear
+      if (users && Object.keys(users).length > 0) {
+        userSelect.innerHTML = '<option value="">Select a user...</option>';
+        Object.entries(users).forEach(([userId, user]) => {
+          let name = user.name || user.fullName || user.username || user.businessName || userId;
+          userSelect.innerHTML += `<option value="${userId}">${name}</option>`;
+        });
+        userSelect.disabled = false;
+        printBtn.disabled = true;
+      } else {
+        userSelect.innerHTML = '<option value="">No users found</option>';
+        userSelect.disabled = true;
+        printBtn.disabled = true;
+      }
+    });
+
+    userSelect.addEventListener("change", function() {
+      const uid = userSelect.value;
+      if (!uid || !usersData[uid]) {
+        receiptPreview.style.display = "none";
+        printBtn.disabled = true;
+        selectedUser = null;
+        return;
+      }
+      selectedUser = usersData[uid];
+      receiptPreview.innerHTML = `
+        <h2>ScaleUp Kiosk Receipt</h2>
+        <div class="receipt-line"><span class="receipt-label">Name:</span> <span class="receipt-value">${selectedUser.name || selectedUser.fullName || selectedUser.username || uid}</span></div>
+        ${selectedUser.businessName ? `<div class="receipt-line"><span class="receipt-label">Business Name:</span> <span class="receipt-value">${selectedUser.businessName}</span></div>` : ""}
+        ${selectedUser.product ? `<div class="receipt-line"><span class="receipt-label">Product:</span> <span class="receipt-value">${selectedUser.product}</span></div>` : ""}
+        ${selectedUser.mainCategory ? `<div class="receipt-line"><span class="receipt-label">Category:</span> <span class="receipt-value">${selectedUser.mainCategory}</span></div>` : ""}
+        ${selectedUser.subcategory ? `<div class="receipt-line"><span class="receipt-label">Subcategory:</span> <span class="receipt-value">${selectedUser.subcategory}</span></div>` : ""}
+        ${selectedUser.tagline ? `<div class="receipt-line"><span class="receipt-label">Tagline:</span> <span class="receipt-value">${selectedUser.tagline}</span></div>` : ""}
+        ${selectedUser.fundingGoal ? `<div class="receipt-line"><span class="receipt-label">Funding Goal:</span> <span class="receipt-value">₱${selectedUser.fundingGoal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</span></div>` : ""}
+        ${selectedUser.fundUsage ? `<div class="receipt-line"><span class="receipt-label">Usage:</span> <span class="receipt-value">${selectedUser.fundUsage}</span></div>` : ""}
+        ${selectedUser.otherPurpose ? `<div class="receipt-line"><span class="receipt-label">Purpose (detail):</span> <span class="receipt-value">${selectedUser.otherPurpose}</span></div>` : ""}
+        <div class="receipt-thankyou">Thank you for using ScaleUp!</div>
+      `;
+      receiptPreview.style.display = "";
+      printBtn.disabled = false;
+    });
+
+    function formatForPrinter(user, uid) {
+      let lines = [
+        "==============================",
+        "        ScaleUp Kiosk         ",
+        "==============================",
+        `Name:         ${user.name || user.fullName || user.username || uid}`,
+      ];
+      if (user.businessName) lines.push(`Business Name: ${user.businessName}`);
+      if (user.product) lines.push(`Product:      ${user.product}`);
+      if (user.mainCategory) lines.push(`Category:     ${user.mainCategory}`);
+      if (user.subcategory) lines.push(`Subcategory:  ${user.subcategory}`);
+      if (user.tagline) lines.push(`Tagline:      ${user.tagline}`);
+      if (user.fundingGoal) lines.push(`Funding Goal: ₱${user.fundingGoal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`);
+      if (user.fundUsage) lines.push(`Usage:        ${user.fundUsage}`);
+      if (user.otherPurpose) lines.push(`Purpose:      ${user.otherPurpose}`);
+      lines.push("", "   Thank You for Using ScaleUp!", "==============================");
+      return lines.join('\n');
+    }
+
+    printBtn.addEventListener("click", function() {
+      if (!selectedUser) return;
+      loader.style.display = "block";
+      printingText.style.display = "block";
+      userSelectContainer.style.display = "none";
+      receiptPreview.style.display = "block";
+      printBtn.disabled = true;
+
+      // Send print request to Firebase
+      const requestRef = db.ref('print_requests').push();
+      requestRef.set({
+        deviceName: deviceName,
+        text: formatForPrinter(selectedUser, userSelect.value),
+        timestamp: Date.now()
+      }).finally(() => {
+        setTimeout(function() {
+          window.location.href = "screen8.html";
+        }, 8000);
+      });
+    });
+  </script>
+</body>
+</html>

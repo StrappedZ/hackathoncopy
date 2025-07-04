@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Registered Accounts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <style>
+    :root {
+      --primary-color: #483D8B;
+      --secondary-color: #87CEEB;
+      --card-bg: #ffffff;
+      --text-color: #333;
+    }
+    body {
+      background-color: var(--secondary-color);
+      margin: 0;
+      padding: 2rem;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      max-width: 1000px;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      margin-bottom: 1rem;
+    }
+    th, td {
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+      font-size: 1rem;
+    }
+    th {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .delete-btn, .delete-selected-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 0.5rem;
+    }
+    .delete-btn:hover, .delete-selected-btn:hover {
+      background-color: darkred;
+    }
+    @media(max-width: 600px) {
+      th, td { font-size: 0.8rem; }
+      .delete-btn, .delete-selected-btn { padding: 0.4rem 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>Registered Accounts (Admin)</header>
+  <button class="delete-selected-btn" onclick="deleteSelected()">Delete Selected</button>
+  <table>
+    <thead>
+      <tr>
+        <th><input type="checkbox" id="selectAll" /></th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Number</th>
+        <th>User ID</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="accountsTable"></tbody>
+  </table>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const accountsTable = document.getElementById("accountsTable");
+    const selectAllCheckbox = document.getElementById("selectAll");
+
+    db.ref("users").on("value", (snapshot) => {
+      accountsTable.innerHTML = "";
+      snapshot.forEach(child => {
+        const data = child.val();
+        const userId = child.key;
+        const name = data.name || "N/A";
+        const email = data.email || "N/A";
+        const number = data.number || "N/A";
+
+        const row = `
+          <tr>
+            <td><input type="checkbox" class="select-user" value="${userId}"></td>
+            <td>${name}</td>
+            <td>${email}</td>
+            <td>${number}</td>
+            <td>${userId}</td>
+            <td><button class="delete-btn" onclick="deleteAccount('${userId}')">Delete</button></td>
+          </tr>
+        `;
+        accountsTable.innerHTML += row;
+      });
+    });
+
+    selectAllCheckbox.addEventListener("change", function() {
+      const checkboxes = document.querySelectorAll(".select-user");
+      checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    function deleteAccount(userId) {
+      if (confirm("Are you sure you want to delete this account?")) {
+        fetch('http://localhost:3000/deleteUser', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: userId })
+        })
+        .then(res => res.text())
+        .then(msg => {
+          alert(msg);
+        })
+        .catch(err => {
+          console.error(err);
+          alert("❌ Error deleting user");
+        });
+      }
+    }
+
+    function deleteSelected() {
+      const checkedBoxes = document.querySelectorAll(".select-user:checked");
+      if (checkedBoxes.length === 0) {
+        alert("Please select at least one account.");
+        return;
+      }
+      if (confirm(`Delete ${checkedBoxes.length} selected account(s)?`)) {
+        checkedBoxes.forEach(box => {
+          fetch('http://localhost:3000/deleteUser', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid: box.value })
+          })
+          .catch(err => console.log("Error deleting: " + err));
+        });
+        alert("✅ Selected accounts deletion requested");
+      }
+    }
+  </script>
+</body>
+</html>

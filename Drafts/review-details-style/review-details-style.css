@@ -1,0 +1,218 @@
+:root {
+  --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #232526 60%, #414345 100%);
+  --color-card-bg: #fff;
+  --color-title: #2B1F6F;
+  --color-label: #232526;
+  --color-input: #2B1F6F;
+  --color-input-bg: #f6f8fa;
+  --color-btn-bg: #46bfae;
+  --color-btn-bg-hover: #2B1F6F;
+  --color-btn-text: #fff;
+  --color-change-btn: #308ee0;
+  --color-change-btn-hover: #e76f51;
+
+  --font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-title: 800 clamp(2.2rem, 7vw, 3.6rem) var(--font-family);
+  --font-label: 600 1.04rem var(--font-family);
+  --font-subtitle: 400 1.13rem var(--font-family);
+
+  --card-radius: 18px;
+  --card-padding: 28px 32px 24px 32px;
+  --card-shadow: 0 4px 22px 0 rgba(34,40,74,0.10), 0 1.5px 10px 0 rgba(70,191,174,0.06);
+
+  --review-row-gap: 13px;
+  --change-btn-size: 1.8rem;
+  --input-radius: 8px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background: var(--color-bg-gradient);
+  color: var(--color-title);
+}
+
+body {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-center-main {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.review-card {
+  background: var(--color-card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  width: 95vw;
+  max-width: 700px;
+  min-width: 280px;
+  padding: var(--card-padding);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.review-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.review-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: #f6f8fa;
+  box-shadow: 0 2px 8px #22284a10;
+  margin-bottom: 12px;
+}
+
+.review-title {
+  font: var(--font-title);
+  color: var(--color-title);
+  letter-spacing: -0.01em;
+  text-align: center;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.review-subtitle {
+  font: var(--font-subtitle);
+  color: #5e6b85;
+  text-align: center;
+  margin-bottom: 0;
+}
+
+.review-form {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--review-row-gap);
+  margin: 0 auto;
+}
+
+.review-form-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0;
+}
+
+.review-label {
+  min-width: 110px;
+  font: var(--font-label);
+  color: var(--color-label);
+  flex-shrink: 0;
+}
+
+.review-input {
+  flex: 1 1 auto;
+  padding: 12px 10px;
+  border-radius: var(--input-radius);
+  border: 1.2px solid #d3dbe9;
+  background: var(--color-input-bg);
+  font-size: 1.07rem;
+  color: var(--color-input);
+  font-family: inherit;
+  font-weight: 600;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.review-change-btn {
+  width: var(--change-btn-size);
+  height: var(--change-btn-size);
+  background: none;
+  border: none;
+  color: var(--color-change-btn);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: color 0.18s, background 0.18s;
+  cursor: pointer;
+  outline: none;
+}
+.review-change-btn:hover,
+.review-change-btn:focus {
+  color: var(--color-change-btn-hover);
+  background: #f6f8fa;
+}
+
+.review-process-btn {
+  width: 100%;
+  max-width: 350px;
+  padding: 15px 0;
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
+  border: none;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 1.19rem;
+  margin: 22px auto 0 auto;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  letter-spacing: 0.01em;
+  box-shadow: 0 3px 13px #355c7d12;
+  text-transform: uppercase;
+  display: block;
+}
+.review-process-btn:hover,
+.review-process-btn:focus {
+  background: var(--color-btn-bg-hover);
+  color: var(--color-btn-text);
+  box-shadow: 0 8px 20px #2B1F6F16;
+}
+
+@media (max-width: 700px) {
+  .review-card {
+    max-width: 98vw;
+    min-width: 0;
+    padding: 12px 1.5vw 10px 1.5vw;
+    border-radius: 11px;
+  }
+  .review-header {
+    margin-bottom: 14px;
+  }
+  .review-logo {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 7px;
+  }
+  .review-title {
+    font-size: 1.3rem;
+  }
+  .review-form {
+    max-width: 99vw;
+  }
+  .review-label {
+    min-width: 70px;
+    font-size: 0.98rem;
+  }
+  .review-input {
+    font-size: 0.98rem;
+    padding: 10px 6px;
+  }
+  .review-process-btn {
+    font-size: 0.93rem;
+    padding: 10px 0;
+    border-radius: 12px;
+    max-width: 100%;
+  }
+}

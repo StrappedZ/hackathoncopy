@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+:root {
+  --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #232526 60%, #414345 100%);
+  --color-box-bg: #fff;
+  --color-title: #2B1F6F;
+  --color-label: #353860;
+  --color-subtitle: #5e6b85;
+  --color-btn-primary-bg: #46bfae;
+  --color-btn-primary-text: #fff;
+  --color-btn-primary-bg-hover: #2B1F6F;
+  --color-btn-primary-text-hover: #fff;
+  --input-bg: #f6f8fa;
+  --input-border: #d3dbe9;
+  --input-border-focus: #46bfae;
+  --input-text: #2B1F6F;
+
+  --btn-radius: 28px;
+  --btn-padding-v: 19px;
+  --btn-font-size: 1.18rem;
+  --title-size: 2.3rem;
+  --card-radius: 26px;
+  --card-padding: 44px 36px 36px 36px;
+  --card-shadow: 0 8px 48px 0 rgba(34,40,74,0.13), 0 2.5px 20px 0 rgba(70,191,174,0.06);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: var(--color-bg-gradient);
+  color: var(--color-title);
+}
+
+body, .fingerprint-center-main {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fingerprint-center-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fingerprint-card {
+  background: var(--color-box-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  width: 98vw;
+  max-width: 410px;
+  padding: var(--card-padding);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h2 {
+  font-size: var(--title-size);
+  font-weight: 800;
+  color: var(--color-title);
+  margin-bottom: 18px;
+  margin-top: 0;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+.fingerprint-username {
+  font-size: 1.08rem;
+  color: var(--color-label);
+  font-weight: 600;
+  margin-bottom: 14px;
+  text-align: center;
+  width: 100%;
+}
+
+#instructions {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1.4px solid var(--input-border);
+  border-radius: 11px;
+  box-sizing: border-box;
+  color: var(--color-label);
+  font-size: 1.12rem;
+  padding: 15px 12px;
+  margin-bottom: 24px;
+  min-height: 60px;
+  text-align: center;
+  white-space: pre-line;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+#startEnroll, #backBtn, .fingerprint-btn-primary {
+  width: 100%;
+  padding: var(--btn-padding-v) 0;
+  background: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  border: none;
+  border-radius: var(--btn-radius);
+  font-weight: 800;
+  font-size: var(--btn-font-size);
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  box-shadow: 0 3px 18px #355c7d18;
+  margin-bottom: 16px;
+  text-transform: capitalize;
+}
+#startEnroll:hover, #startEnroll:focus {
+  background: var(--color-btn-primary-bg-hover);
+  color: var(--color-btn-primary-text-hover);
+  box-shadow: 0 8px 32px #2B1F6F22;
+}
+#backBtn {
+  background: #e4ecf1;
+  color: #2B1F6F;
+  margin-bottom: 0;
+}
+#backBtn:hover, #backBtn:focus {
+  background: #c9d7e5;
+  color: #2B1F6F;
+  box-shadow: 0 5px 20px #2B1F6F11;
+}
+
+@media (max-width: 600px) {
+  .fingerprint-card {
+    max-width: 99vw;
+    padding: 24px 7vw 18px 7vw;
+    border-radius: 15px;
+  }
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 14px;
+  }
+  .fingerprint-username {
+    font-size: 0.98rem;
+    margin-bottom: 10px;
+  }
+  #instructions {
+    font-size: 1rem;
+    padding: 10px 6px;
+    min-height: 44px;
+  }
+  #startEnroll, #backBtn {
+    font-size: 1.03rem;
+    padding: 14px 0;
+    border-radius: 19px;
+  }
+}

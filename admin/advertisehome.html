@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Advertise Home</title>
+  <style>
+    body {
+      background: #222;
+      color: #fff;
+      font-family: system-ui, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      margin-top: 0;
+      margin-bottom: 32px;
+    }
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .action-btn {
+      background: #29b6f6;
+      color: #fff;
+      border: none;
+      padding: 14px 36px;
+      border-radius: 8px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0003;
+      transition: background 0.2s;
+    }
+    .action-btn:hover {
+      background: #039be5;
+    }
+    .images-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 32px 24px;
+    }
+    .img-box {
+      background: #181818;
+      border-radius: 14px;
+      box-shadow: 0 2px 16px #0005;
+      width: 220px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 10px 20px 10px;
+      position: relative;
+    }
+    .img-box img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #333;
+      border: 1px solid #222;
+      margin-bottom: 10px;
+    }
+    .replace-btn {
+      margin-top: 4px;
+      background: #fff8;
+      color: #111;
+      border: none;
+      border-radius: 6px;
+      padding: 7px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 2px 8px #0003;
+      transition: background 0.2s;
+      outline: none;
+    }
+    .replace-btn:hover {
+      background: #fffde9;
+    }
+    .file-input {
+      display: none;
+    }
+    .img-label {
+      color: #ccc;
+      font-size: 0.98rem;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+    .loading-msg {
+      color: #fff;
+      font-size: 1.15rem;
+      background: #111c;
+      padding: 1em 2em;
+      border-radius: 8px;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 900px) {
+      .images-grid {
+        gap: 20px 10px;
+      }
+      .img-box {
+        width: 44vw;
+        min-width: 170px;
+        max-width: 250px;
+      }
+    }
+    @media (max-width: 550px) {
+      .img-box {
+        width: 97vw;
+        min-width: unset;
+        max-width: unset;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Advertise Home</h1>
+    <div class="actions">
+      <button class="action-btn" onclick="window.location.href='ads.html'">View Slideshow</button>
+      <button class="action-btn" onclick="window.location.href='liveadvertise.html'">Live Edit</button>
+    </div>
+    <div id="loadingMsg" class="loading-msg">Loading images...</div>
+    <div class="images-grid" id="imagesGrid">
+      <!-- 7 image boxes will be rendered here -->
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.firebasestorage.app",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const imgNames = ["1", "2", "3", "4", "5", "6", "7"];
+    const folder = "ads-image";
+    const imagesGrid = document.getElementById('imagesGrid');
+    const loadingMsg = document.getElementById('loadingMsg');
+    let fileKeys = [];
+
+    function loadImages() {
+      loadingMsg.style.display = "block";
+      const storageRef = firebase.storage().ref(folder);
+      storageRef.listAll()
+      .then(res => {
+        window.storageFiles = res.items.map(i=>i.name);
+        const fileNames = imgNames.map(n => {
+          for (let ext of ['.jpg', '.png', '.jpeg', '.webp']) {
+            if (window.storageFiles.includes(`${n}${ext}`)) return `${n}${ext}`;
+          }
+          return null;
+        });
+        fileKeys = fileNames;
+        return Promise.all(
+          fileNames.map(name => name 
+            ? storageRef.child(name).getDownloadURL().catch(()=>null)
+            : Promise.resolve(null)
+          )
+        );
+      })
+      .then(urls => {
+        renderImageBoxes(urls);
+        loadingMsg.style.display = "none";
+      })
+      .catch(err => {
+        loadingMsg.textContent = "Error loading images: " + err.message;
+      });
+    }
+
+    function renderImageBoxes(urls) {
+      imagesGrid.innerHTML = "";
+      for (let i = 0; i < 7; i++) {
+        const url = urls[i];
+        const fileKey = fileKeys[i];
+        const box = document.createElement('div');
+        box.className = "img-box";
+
+        // Image label
+        const label = document.createElement('div');
+        label.className = "img-label";
+        label.textContent = `Slot ${i+1}`
+
+        // Image preview
+        const img = document.createElement('img');
+        img.src = url || "https://via.placeholder.com/220x180/2b2b2b/cccccc?text=No+Image";
+        img.alt = `Slot ${i+1} Image`;
+
+        // Replace button
+        const replaceBtn = document.createElement('button');
+        replaceBtn.className = "replace-btn";
+        replaceBtn.innerHTML = "&#128393; Replace";
+        replaceBtn.type = "button";
+        replaceBtn.onclick = () => fileInput.click();
+
+        // File input
+        const fileInput = document.createElement('input');
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+        fileInput.className = "file-input";
+        fileInput.onchange = (e) => handleReplace(i, e);
+
+        box.appendChild(label);
+        box.appendChild(img);
+        box.appendChild(replaceBtn);
+        box.appendChild(fileInput);
+        imagesGrid.appendChild(box);
+      }
+    }
+
+    function handleReplace(idx, event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Figure out the file key (e.g., '3.jpg'); if none exists, default to .jpg
+      let fileKey = fileKeys[idx];
+      if (!fileKey) {
+        fileKey = imgNames[idx] + ".jpg";
+        fileKeys[idx] = fileKey;
+      }
+      //sdasdasd
+
+      loadingMsg.textContent = "Uploading...";
+      loadingMsg.style.display = "block";
+
+      const storageRef = firebase.storage().ref(`${folder}/${fileKey}`);
+      storageRef.put(file).then(snapshot => {
+        return storageRef.getDownloadURL();
+      }).then(url => {
+        // Update UI
+        document.querySelectorAll('.img-box')[idx].querySelector('img').src = url;
+        loadingMsg.style.display = "none";
+        alert("Image replaced successfully.");
+      }).catch(err => {
+        loadingMsg.style.display = "none";
+        alert("Failed to replace image: " + err.message);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', loadImages);
+  </script>
+</body>
+</html>

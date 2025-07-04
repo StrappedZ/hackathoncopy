@@ -1,0 +1,206 @@
+:root {
+  --font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-logo: 700 2.1rem var(--font-family);
+  --font-big: 800 clamp(2.5rem, 8vw, 8rem) var(--font-family);
+  --font-highlight: 600 1.08rem var(--font-family);
+
+  --color-bg: #f6f8fa;
+  --color-logo-text: #355c7d;
+  --color-bigtext: #22284a; 
+  /* 22284a */
+  --color-highlight: #fff;
+  --color-highlight-bg: #46bfae;
+  --color-logo-bg: #e1e7ef;
+
+  --logo-size: 20px;
+  --logo-radius: 50px;
+  --logo-group-gap: 10px;
+
+  --highlight-radius: 20px;
+  --highlight-padding-v: 8px;
+  --highlight-padding-h: 26px;
+  --main-gap: 40px;
+  --navbar-padding-top: 0.5vh;
+  --navbar-padding-bottom: 2.5vh;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-bigtext);
+}
+
+body {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Centered Navbar --- */
+.landing-center-navbar {
+  width: 100vw;
+  display: flex;
+  justify-content: center;    /* Center horizontally */
+  align-items: center;        /* Center vertically */
+  padding-top: var(--navbar-padding-top);
+  padding-bottom: var(--navbar-padding-bottom);
+  background: transparent;
+  position: relative;
+  z-index: 10;
+  margin-bottom: 2vh; /* Space below navbar */
+}
+
+.landing-center-logo-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--logo-group-gap);
+  justify-content: center;
+}
+
+.landing-center-logo-img {
+  width: var(200);
+  height: var(200);
+  border-radius: var(--logo-radius);
+  background: var(--color-logo-bg);
+  object-fit: cover;
+  box-shadow: 0 2px 12px #dde5ef;
+}
+
+.landing-center-logo-title {
+  font: var(--font-logo);
+  color: var(--color-logo-text);
+  letter-spacing: 0.07em;
+}
+
+/* --- Centered Main Content --- */
+.landing-center-main {
+  flex: 1;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;   /* Vertical center */
+  align-items: center;       /* Horizontal center */
+  box-sizing: border-box;
+  padding: 0;
+  position: relative;
+}
+
+.landing-center-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;   /* Center children vertically within main */
+  width: 100%;
+  height: 100%;
+}
+
+.landing-center-bigtext {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 70vw;
+  max-width: 900px;
+  min-width: 240px;
+  margin: 0 auto 2vh auto;
+  text-align: center;
+}
+
+.bigtext-line {
+  font: var(--font-big);
+  color: var(--color-bigtext);
+  line-height: 1.1;
+  text-shadow: 0 2.5px 10px rgba(44,56,100,0.09);
+  text-transform: none;
+  word-break: break-word;
+  margin-bottom: 1.5vh;
+}
+.bigtext-line:last-child {
+  margin-bottom: 0;
+}
+
+.landing-center-highlight {
+  margin-top: 1.5vh;
+  display: flex;
+  justify-content: center;
+}
+
+.highlight-text {
+  background: var(--color-highlight-bg);
+  color: var(--color-highlight);
+  font: var(--font-highlight);
+  border-radius: var(--highlight-radius);
+  padding: var(--highlight-padding-v) var(--highlight-padding-h);
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 6px #46bfae33;
+  user-select: none;
+}
+
+.zoom-blur-out {
+  animation: zoomBlurOut 0.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes zoomBlurOut {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  60% {
+    opacity: 0.8;
+    filter: blur(8px);
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(24px);
+    transform: scale(1.12);
+  }
+}
+
+/* Slow tilting animation for highlight-text */
+.tilt {
+  display: inline-block;
+  animation: tilt 2.8s cubic-bezier(.62,-0.01,.34,1.01) infinite alternate;
+  transform-origin: 50% 60%;
+}
+@keyframes tilt {
+  0%   { transform: rotate(-6deg);}
+  50%  { transform: rotate(7deg);}
+  100% { transform: rotate(-6deg);}
+}
+
+/* TABLET STYLE */
+@media (min-width: 600px) and (max-width: 1023px) {
+  :root {
+    --logo-size: 18px;
+    --font-logo: 700 1.7rem var(--font-family);
+    --font-big: 900 clamp(1.8rem, 12vw, 5.5rem) var(--font-family);
+    --main-gap: 28px;
+  }
+  .landing-center-navbar {
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+  }
+  .landing-center-bigtext {
+    width: 80vw;
+    max-width: 700px;
+    min-width: 180px;
+  }
+  .bigtext-line {
+    font-weight: 900 !important; /* Make Need Capital? extra bold on tablet */
+  }
+}
+
+/* DESKTOP STYLE */
+@media (min-width: 1024px) {
+  .landing-center-bigtext {
+    margin-top: 100px;
+  }
+}

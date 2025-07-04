@@ -1,0 +1,53 @@
+@media (max-width: 1200px) {
+  .card-list {
+    gap: 18px;
+    max-width: 900px;
+  }
+  .card-carousel-section {
+    padding: 0 4px;
+  }
+}
+@media (max-width: 900px) {
+  .card-list {
+    gap: 8px;
+    max-width: 700px;
+  }
+  .card {
+    width: 38vw;
+    min-width: 140px;
+    max-width: 270px;
+    padding: 20px 5px 10px 5px;
+  }
+}
+@media (max-width: 700px) {
+  .card-list {
+    gap: 5px;
+    max-width: 99vw;
+  }
+  .card {
+    width: 80vw;
+    min-width: 100px;
+    max-width: 95vw;
+    padding: 12px 4px 9px 4px;
+  }
+  .carousel-dots {
+    margin-top: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .card {
+    width: 98vw;
+    min-width: 70px;
+    max-width: 99vw;
+    padding: 6px 2px 6px 2px;
+  }
+  .carousel-dot {
+    width: 12px;
+    height: 12px;
+  }
+  .modal-content.modal-business {
+    max-width: 98vw;
+    min-width: 0;
+    padding: 18px 2px;
+  }
+}

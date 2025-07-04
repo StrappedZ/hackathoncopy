@@ -1,0 +1,25 @@
+@media (min-width: 600px) and (max-width: 1023px) {
+  :root {
+    --size-logo-img: 54px;
+    --size-navbar-height: 65px;
+    --size-navbar-icon: 22px;
+    --size-navbar-padding: 18px;
+    --font-title: 700 1.55rem var(--font-family);
+    --font-navbar: 600 1.16rem var(--font-family);
+    --size-box-width: 170px;
+    --size-box-height: 110px;
+    --radius-navbar: 13px;
+    --radius-box: 16px;
+    --gap-boxes: 18px;
+    --padding-main: 16px;
+    --padding-box: 18px;
+  }
+  .dashboard-navbar {
+    padding: 0 var(--size-navbar-padding);
+    height: var(--size-navbar-height);
+  }
+  .navbar-logo-img {
+    width: var(--size-logo-img);
+    height: var(--size-logo-img);
+  }
+}

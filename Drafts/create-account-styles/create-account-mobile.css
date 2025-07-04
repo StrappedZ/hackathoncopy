@@ -1,0 +1,15 @@
+@media (max-width: 599px) {
+  :root {
+    --title-size: clamp(1.3rem, 9vw, 2.2rem);
+    --subtitle-size: 0.97rem;
+    --btn-padding-v: 12px;
+    --btn-padding-h: 10px;
+    --content-max-width: 97vw;
+    --main-gap: 17px;
+    --card-padding: 16px 6vw;
+    --card-radius: 11px;
+  }
+  .create-account-card {
+    padding: var(--card-padding);
+  }
+}

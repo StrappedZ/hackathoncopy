@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Advertise Plans</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      min-height: 100vh;
+      width: 100vw;
+      box-sizing: border-box;
+      background: #f6f8fb;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      color: #222b3a;
+      overflow: hidden;
+    }
+    .back-btn-container {
+      width: 100vw;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 12;
+      background: transparent;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      padding: 18px 0 0 18px;
+      pointer-events: none;
+    }
+    .back-btn {
+      pointer-events: all;
+      display: flex;
+      align-items: center;
+      background: #fff;
+      color: #3878e6;
+      border: 1.5px solid #e0e8f7;
+      border-radius: 8px;
+      padding: 7px 19px 7px 13px;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      box-shadow: 0 2.5px 12px 0 rgba(60,55,170,0.08);
+      transition: background 0.13s, box-shadow 0.13s, border 0.13s;
+      cursor: pointer;
+      min-width: 0;
+      outline: none;
+      gap: 7px;
+    }
+    .back-btn:focus,
+    .back-btn:hover {
+      background: #eaf2ff;
+      border-color: #b8d1f7;
+      box-shadow: 0 4px 20px 0 rgba(60,55,170,0.10);
+      color: #2261bb;
+    }
+    .back-arrow {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      margin-right: 3px;
+      vertical-align: middle;
+    }
+    .plans-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      width: 100vw;
+      height: 100vh;
+      min-height: 100dvh;
+      min-width: 100vw;
+      gap: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+    .plan-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      border-radius: 18px;
+      box-shadow: 0 2px 16px 0 rgba(60,55,170,0.09);
+      padding: 32px 28px 24px 28px;
+      transition: transform 0.13s, box-shadow 0.13s, border 0.13s;
+      border: 1.5px solid rgba(60,55,170,0.07);
+      min-width: 0;
+      min-height: 0;
+      cursor: pointer;
+      outline: none;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      background-size: 200% 200%;
+      background-position: center;
+      color: #222b3a;
+    }
+    .plan-card:focus,
+    .plan-card:hover {
+      box-shadow: 0 8px 36px 0 rgba(60,55,170,0.16);
+      transform: scale(1.05);
+      border-color: #3397ff;
+      z-index: 1;
+    }
+    .plan-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #293048;
+      margin-bottom: 8px;
+    }
+    .plan-price {
+      font-size: 1.15rem;
+      font-weight: 500;
+      color: #216a4f;
+      margin-bottom: 12px;
+    }
+    .plan-desc {
+      font-size: 1.03rem;
+      color: #44516b;
+      margin-bottom: 10px;
+      font-weight: 400;
+      min-height: 36px;
+    }
+    .plan-pros {
+      margin: 0;
+      padding-left: 20px;
+      color: #444d5e;
+      font-size: 0.98rem;
+      font-weight: 400;
+    }
+    .plan-label {
+      font-size: 0.99rem;
+      font-weight: 600;
+      background: #f2f5ff;
+      color: #4661c4;
+      padding: 2px 14px;
+      border-radius: 99px;
+      margin-bottom: 13px;
+      margin-left: -3px;
+      letter-spacing: 0.03em;
+      display: inline-block;
+      background: rgba(255,255,255,0.85);
+    }
+    /* Gradient backgrounds from lowest to highest price */
+    .day-card {
+      background: linear-gradient(135deg, #eaf8ff 0%, #c0ffe2 100%);
+    }
+    .week-card {
+      background: linear-gradient(135deg, #b2e0ff 0%, #9ee8c7 100%);
+    }
+    .month-card {
+      background: linear-gradient(135deg, #82bfff 0%, #5fd7b3 100%);
+    }
+    .year-card {
+      background: linear-gradient(135deg, #2a84e9 0%, #25c36d 100%);
+      color: #fff;
+    }
+    .year-card .plan-title, .year-card .plan-label, .year-card .plan-desc, .year-card .plan-pros, .year-card .plan-price {
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+    }
+    /* Modal styles */
+    .modal-backdrop {
+      position: fixed;
+      z-index: 50;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(52, 60, 92, 0.18);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.17s;
+      animation: fadeInBg 0.23s;
+    }
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal-content {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 6px 36px 0 rgba(60,55,170,0.16);
+      padding: 38px 32px 32px 32px;
+      min-width: 320px;
+      max-width: 95vw;
+      width: 390px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      animation: popIn .22s cubic-bezier(.47,1.64,.41,.91);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.92) translateY(20px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      background: transparent;
+      border: none;
+      color: #3a3d61;
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 0;
+      z-index: 2;
+      line-height: 1;
+    }
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: #2a3964;
+      text-align: center;
+    }
+    .modal-label {
+      font-size: 1.01rem;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: #26355d;
+      margin-top: 14px;
+    }
+    .modal-select, .modal-input {
+      border: 1.5px solid #e0e4f4;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 1.06rem;
+      outline: none;
+      margin-bottom: 10px;
+      margin-top: 2px;
+      background: #fafdff;
+      color: #26355d;
+      transition: border .16s;
+    }
+    .modal-select:focus, .modal-input:focus {
+      border-color: #3397ff;
+    }
+    .modal-info {
+      font-size: .98rem;
+      margin-bottom: 7px;
+      color: #388c7b;
+    }
+    .modal-btn {
+      background: linear-gradient(90deg, #36b37e 0%, #2a84e9 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.13rem;
+      font-weight: 500;
+      padding: 11px 0;
+      cursor: pointer;
+      margin-top: 18px;
+      box-shadow: 0 2px 10px 0 rgba(60,55,170,0.09);
+      transition: background .14s, box-shadow .12s;
+    }
+    .modal-btn:focus,
+    .modal-btn:hover {
+      background: linear-gradient(90deg, #2a84e9 0%, #36b37e 100%);
+      box-shadow: 0 8px 24px 0 rgba(60,55,170,0.13);
+    }
+    /* Styles for Authentication Section */
+    .auth-section {
+        position: absolute;
+        top: 20px; /* Adjust as needed to not overlap with back button */
+        right: 20px;
+        z-index: 15; /* Above other content */
+        background: #fff;
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        max-width: 280px;
+        min-width: 220px;
+    }
+    .auth-status {
+        font-size: 0.9em;
+        color: #555;
+        text-align: center;
+        width: 100%;
+    }
+    .auth-btn-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+    }
+    .auth-btn {
+        background: linear-gradient(90deg, #2a84e9 0%, #36b37e 100%); /* Slightly different gradient or color for auth buttons */
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background .14s, box-shadow .12s;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .auth-btn:hover {
+        background: linear-gradient(90deg, #36b37e 0%, #2a84e9 100%);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .auth-form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        margin-top: 10px;
+    }
+    .auth-form input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 0.9em;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .auth-form .auth-btn {
+        margin-top: 5px;
+    }
+    .logout-btn {
+        background: #dc3545; /* Red color for logout */
+    }
+    .logout-btn:hover {
+        background: #c82333;
+    }
+    @media (max-width: 700px) {
+      .plans-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(4, 1fr);
+        height: 100vh;
+        min-height: 100dvh;
+      }
+      .plan-card { padding: 10vw 4vw; border-radius: 10px;}
+      .back-btn-container { padding: 10px 0 0 10px;}
+      .back-btn { font-size: .98rem; padding: 6px 14px 6px 10px; }
+      .modal-content { width: 96vw; min-width: unset; max-width: 99vw; padding: 6vw 3vw 5vw 3vw;}
+      .auth-section {
+          top: 10px;
+          right: 10px;
+          padding: 10px 15px;
+          max-width: 200px;
+          min-width: unset;
+      }
+      .auth-btn { font-size: 0.85rem; padding: 8px 12px; }
+      .auth-form input { padding: 8px; font-size: 0.8em; }
+    }
+    @media (max-width: 440px) {
+      .plan-card { padding: 8vw 2vw; border-radius: 7px;}
+      .back-btn-container { padding: 4px 0 0 4px;}
+      .back-btn { font-size: .91rem; }
+      .modal-content { padding: 5vw 1vw;}
+      .auth-section {
+          top: 5px;
+          right: 5px;
+          padding: 8px 10px;
+          max-width: 150px;
+          min-width: unset;
+      }
+      .auth-status { font-size: 0.75em; }
+      .auth-btn { font-size: 0.75rem; padding: 6px 8px; }
+      .auth-form input { padding: 6px; font-size: 0.7em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="back-btn-container">
+    <a class="back-btn" href="../index.html">
+      <span class="back-arrow">
+        <svg viewBox="0 0 20 20" fill="none" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13.25 16L8.25 11L13.25 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      Back
+    </a>
+  </div>
+
+  <div class="auth-section">
+    <div class="auth-status" id="authStatus">
+      Loading user status...
+    </div>
+    <div class="auth-btn-group" id="authButtonGroup">
+      <button class="auth-btn" id="showLoginBtn">Login with Email/Password</button>
+    
+      </div>
+    <div class="auth-form" id="authForm" style="display:none;">
+        <input type="email" id="loginEmail" placeholder="Email" value="">
+        <input type="password" id="loginPassword" placeholder="Password" value="">
+        <button class="auth-btn" id="emailLoginBtn">Login</button>
+    </div>
+  </div>
+  <div class="plans-grid">
+    <div class="plan-card day-card" tabindex="0" data-plan="Day" data-price="500" data-type="Day">
+      <span class="plan-label">Day</span>
+      <div class="plan-title">Daily Advertising</div>
+      <div class="plan-price">₱500 /day per kiosk</div>
+      <div class="plan-desc">
+        Perfect for flash sales or events. Rent a kiosk for one day, no commitment.
+      </div>
+      <ul class="plan-pros">
+        <li>Full flexibility</li>
+        <li>Same-day setup available</li>
+      </ul>
+    </div>
+    <div class="plan-card week-card" tabindex="0" data-plan="Weekly" data-price="3000" data-type="Weekly">
+      <span class="plan-label">Weekly</span>
+      <div class="plan-title">Weekly Advertising</div>
+      <div class="plan-price">₱3,000 /week per kiosk</div>
+      <div class="plan-desc">
+        Run your ad all week. Great for launches, promos, and wider reach.
+      </div>
+      <ul class="plan-pros">
+        <li>Discounted vs. daily plan</li>
+        <li>Easy to renew or extend</li>
+      </ul>
+    </div>
+    <div class="plan-card month-card" tabindex="0" data-plan="Monthly" data-price="9000" data-type="Monthly">
+      <span class="plan-label">Monthly</span>
+      <div class="plan-title">Monthly Advertising</div>
+      <div class="plan-price">₱9,000 /month per kiosk</div>
+      <div class="plan-desc">
+        Consistent presence. Build awareness and loyalty with a month-long campaign.
+      </div>
+      <ul class="plan-pros">
+        <li>Lowest cost per week</li>
+        <li>Priority kiosk selection</li>
+      </ul>
+    </div>
+    <div class="plan-card year-card" tabindex="0" data-plan="Annual" data-price="100000" data-type="Annual">
+      <span class="plan-label">Annual</span>
+      <div class="plan-title">Annual Advertising</div>
+      <div class="plan-price">₱100,000 /year per kiosk</div>
+      <div class="plan-desc">
+        All-year exposure. Lock in a kiosk and maximize brand impact.
+      </div>
+      <ul class="plan-pros">
+        <li>Best value per day</li>
+        <li>VIP support & first choice of location</li>
+      </ul>
+    </div>
+  </div>
+  <div id="modalBackdrop" class="modal-backdrop" style="display:none;">
+    <div class="modal-content" id="modalContent">
+      <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+      <div class="modal-title" id="modalTitle"></div>
+      <label class="modal-label" for="branchSelect">Which branch do you like to advertise?</label>
+      <select class="modal-select" id="branchSelect">
+        <option value="" disabled selected>Select a branch</option>
+        <option value="SM Tungko" data-max="8">SM Tungko</option>
+        <option value="Sm Fairview" data-max="15">Sm Fairview</option>
+        <option value="Ayala Malls" data-max="15">Ayala Malls</option>
+        <option value="Robinson Malls" data-max="10">Robinson Malls</option>
+        <option value="Fairview Terraces" data-max="10">Fairview Terraces</option>
+        <option value="Mall of Asia" data-max="50">Mall of Asia</option>
+        <option value="WalterMart" data-max="5">WalterMart</option>
+      </select>
+      <div class="modal-info" id="kioskInfo" style="display:none;"></div>
+      <label class="modal-label" for="kioskInput" id="kioskLabel" style="display:none;">How many kiosks would you like to rent?</label>
+      <input class="modal-input" type="number" min="1" id="kioskInput" style="display:none;" placeholder="Enter number of kiosks" />
+      <button class="modal-btn" id="proceedBtn" style="display:none;">Proceed to payment</button>
+    </div>
+  </div>
+  <script type="module">
+    // Firebase SDK Imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+
+    // Initialize Firebase services
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app); // Firestore might not be used here directly, but kept for consistency
+    const auth = getAuth(app);
+
+    let currentUser = null; // To store the logged-in user
+
+    // References to Authentication UI elements
+    const authStatusEl = document.getElementById('authStatus');
+    const authButtonGroup = document.getElementById('authButtonGroup');
+    const showLoginBtn = document.getElementById('showLoginBtn');
+    // Removed anonymousLoginBtn as it's no longer in the HTML
+    const authForm = document.getElementById('authForm');
+    const loginEmailInput = document.getElementById('loginEmail');
+    const loginPasswordInput = document.getElementById('loginPassword');
+    const emailLoginBtn = document.getElementById('emailLoginBtn');
+
+    // Modal logic variables
+    const planCards = document.querySelectorAll('.plan-card');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalClose = document.getElementById('modalClose');
+    const branchSelect = document.getElementById('branchSelect');
+    const kioskInput = document.getElementById('kioskInput');
+    const kioskInfo = document.getElementById('kioskInfo');
+    const kioskLabel = document.getElementById('kioskLabel');
+    const proceedBtn = document.getElementById('proceedBtn');
+
+    let selectedPlan = '';
+    let selectedBranch = '';
+    let selectedMax = 0;
+
+    // --- Firebase Authentication Functions ---
+
+    // Function to sign in with email and password
+    async function signInWithEmailPass(email, password) {
+        emailLoginBtn.disabled = true;
+        emailLoginBtn.textContent = 'Logging in...';
+        // Removed anonymousLoginBtn.disabled = true;
+        authStatusEl.textContent = 'Attempting login...';
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            currentUser = userCredential.user;
+            console.log("Signed in with Email/Password as:", currentUser.email, "UID:", currentUser.uid);
+            updateAuthUI(currentUser);
+            return currentUser;
+        } catch (error) {
+            console.error("Error signing in with Email/Password:", error.code, error.message);
+            authStatusEl.textContent = `Login failed: ${error.message}`;
+            emailLoginBtn.disabled = false;
+            emailLoginBtn.textContent = 'Login';
+            // Removed anonymousLoginBtn.disabled = false;
+            alert(`Login failed: ${error.message}`);
+            return null;
+        }
+    }
+
+    // Removed signInAnonymouslyUser function
+
+    // Function to handle logout
+    async function handleLogout() {
+        try {
+            await signOut(auth);
+            console.log("User logged out.");
+            updateAuthUI(null); // Update UI to logged out state
+            alert("You have been logged out.");
+        } catch (error) {
+            console.error("Error logging out:", error);
+            alert(`Logout failed: ${error.message}`);
+        }
+    }
+
+    // Function to update the UI based on authentication status
+    function updateAuthUI(user) {
+        if (user) {
+            currentUser = user;
+            const displayEmail = user.email || "Anonymous User";
+            const displayUid = user.uid.substring(0, 8) + '...';
+            authStatusEl.innerHTML = `Logged in as: <b>${displayEmail}</b> (UID: ${displayUid})`;
+
+            // Hide login buttons/form
+            showLoginBtn.style.display = 'none';
+            // Removed anonymousLoginBtn.style.display = 'none';
+            authForm.style.display = 'none';
+
+            // Add a logout button if it doesn't exist
+            let logoutButton = document.getElementById('logoutBtn');
+            if (!logoutButton) {
+                logoutButton = document.createElement('button');
+                logoutButton.id = 'logoutBtn';
+                logoutButton.className = 'auth-btn logout-btn';
+                logoutButton.textContent = 'Logout';
+                logoutButton.onclick = handleLogout;
+                authButtonGroup.appendChild(logoutButton);
+            }
+        } else {
+            currentUser = null;
+            authStatusEl.textContent = 'Not logged in.';
+
+            // Show login buttons/form options
+            showLoginBtn.style.display = 'block';
+            // Removed anonymousLoginBtn.style.display = 'block';
+            authForm.style.display = 'none'; // Keep form hidden until 'showLoginBtn' is clicked
+
+            // Remove logout button if it exists
+            const logoutButton = document.getElementById('logoutBtn');
+            if (logoutButton) {
+                logoutButton.remove();
+            }
+
+            // Reset button states
+            showLoginBtn.disabled = false;
+            // Removed anonymousLoginBtn.disabled = false;
+            // Removed anonymousLoginBtn.textContent = 'Login Anonymously';
+            emailLoginBtn.disabled = false;
+            emailLoginBtn.textContent = 'Login';
+        }
+    }
+
+
+    // --- Modal and Plan Selection Logic ---
+    planCards.forEach(card => {
+      card.addEventListener('click', function() {
+        if (!currentUser) {
+            alert("Please log in first before selecting a plan.");
+            return;
+        }
+
+        selectedPlan = card.getAttribute('data-plan');
+        // Show modal, reset fields
+        modalBackdrop.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        modalTitle.textContent = `Choose branch for your ${selectedPlan} Plan`;
+        branchSelect.value = ''; // Reset selected branch
+        kioskInput.value = '';
+        kioskInput.style.display = 'none';
+        kioskInfo.style.display = 'none';
+        kioskLabel.style.display = 'none';
+        proceedBtn.style.display = 'none';
+      });
+    });
+
+    modalClose.onclick = function() {
+      modalBackdrop.style.display = 'none';
+      document.body.style.overflow = '';
+    };
+
+    // Hide modal on backdrop click (not on modal content)
+    modalBackdrop.addEventListener('mousedown', function(e) {
+      if (e.target === modalBackdrop) {
+        modalBackdrop.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+    });
+
+    branchSelect.addEventListener('change', function() {
+      selectedBranch = branchSelect.value;
+      selectedMax = parseInt(branchSelect.options[branchSelect.selectedIndex].getAttribute('data-max'), 10);
+
+      kioskInfo.textContent = `Maximum kiosks available for ${selectedBranch}: ${selectedMax}`;
+      kioskInfo.style.display = 'block';
+
+      kioskInput.value = '';
+      kioskInput.style.display = 'block';
+      kioskInput.max = selectedMax;
+      kioskInput.min = 1;
+      kioskLabel.style.display = 'block';
+      proceedBtn.style.display = 'none';
+    });
+
+    kioskInput.addEventListener('input', function() {
+      let val = parseInt(kioskInput.value, 10);
+      if (isNaN(val) || val < 1) {
+        proceedBtn.style.display = 'none';
+      } else if (val > selectedMax) {
+        kioskInput.value = selectedMax;
+        proceedBtn.style.display = 'block';
+      } else {
+        proceedBtn.style.display = 'block';
+      }
+    });
+
+    proceedBtn.onclick = function() {
+      if (!currentUser) {
+          alert("You must be logged in to proceed to payment.");
+          return;
+      }
+      // Save details to localStorage for payment.html to use
+      let planPrice = 0;
+      document.querySelectorAll('.plan-card').forEach(card => {
+        if (card.getAttribute('data-plan') === selectedPlan) {
+          planPrice = card.getAttribute('data-price');
+        }
+      });
+
+      localStorage.setItem('ad_plan', selectedPlan);
+      localStorage.setItem('ad_price', planPrice);
+      localStorage.setItem('ad_branch', selectedBranch);
+      localStorage.setItem('ad_kiosks', kioskInput.value);
+      localStorage.setItem('ad_userId', currentUser.uid); // Save the current user's UID!
+
+      // Redirect to payment.html
+      window.location.href = 'payment.html';
+    };
+
+    // --- Event Listeners for Authentication Elements ---
+    showLoginBtn.onclick = () => {
+        // Toggle the visibility of the login form
+        if (authForm.style.display === 'flex') {
+            authForm.style.display = 'none';
+            showLoginBtn.textContent = 'Login with Email/Password';
+        } else {
+            authForm.style.display = 'flex';
+            showLoginBtn.textContent = 'Hide Login Form';
+        }
+    };
+
+    emailLoginBtn.onclick = () => {
+        const email = loginEmailInput.value;
+        const password = loginPasswordInput.value;
+        if (email && password) {
+            signInWithEmailPass(email, password);
+        } else {
+            alert("Please enter both email and password.");
+        }
+    };
+
+    // Removed anonymousLoginBtn.onclick = signInAnonymouslyUser;
+
+    // On page load: Check existing auth state
+    document.addEventListener('DOMContentLoaded', () => {
+        // This listener fires whenever the auth state changes (login, logout, token refresh)
+        onAuthStateChanged(auth, (user) => {
+            updateAuthUI(user); // Call the unified UI update function
+        });
+    });
+
+  </script>
+</body>
+</html>

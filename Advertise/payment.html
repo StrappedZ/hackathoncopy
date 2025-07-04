@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Payment</title>
+  <style>
+    /* Base styles for HTML and Body */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #f6f8fb;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      color: #222b3a;
+    }
+
+    /* Styles for the main payment container */
+    .payment-container {
+      max-width: 390px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 6px 32px 0 rgba(60,55,170,0.12);
+      padding: 32px 24px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      min-height: 420px;
+    }
+
+    /* Title styling */
+    .title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #2a3964;
+      text-align: center;
+    }
+
+    /* Summary section styling */
+    .summary {
+      background: #f4faff;
+      border-radius: 10px;
+      padding: 18px 14px;
+      margin: 22px 0 18px 0;
+      font-size: 1.07rem;
+      color: #355c4e;
+      font-weight: 500;
+      text-align: center;
+      line-height: 1.7;
+    }
+
+    /* Label styling for sections */
+    .label {
+      font-size: 1.01rem;
+      font-weight: 600;
+      margin-bottom: 7px;
+      color: #264b6c;
+    }
+
+    /* Container for payment method options */
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    /* Individual payment method option styling */
+    .method-option {
+      display: flex;
+      align-items: center;
+      padding: 11px 19px;
+      border: 1.5px solid #e0e4f4;
+      border-radius: 8px;
+      background: #fafdff;
+      cursor: pointer;
+      font-size: 1.07rem;
+      font-weight: 500;
+      color: #2a3964;
+      gap: 13px;
+      transition: border .16s, background .14s;
+      outline: none;
+      user-select: none;
+    }
+
+    /* Styling for selected, focused, or hovered payment methods */
+    .method-option.selected,
+    .method-option:focus,
+    .method-option:hover {
+      border-color: #3397ff;
+      background: #eaf6ff;
+    }
+
+    /* Icon container for payment methods */
+    .method-icon {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 5px;
+    }
+
+    /* Pay button styling */
+    .pay-btn {
+      background: linear-gradient(90deg, #36b37e 0%, #2a84e9 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.13rem;
+      font-weight: 600;
+      padding: 13px 0;
+      cursor: pointer;
+      box-shadow: 0 2px 10px 0 rgba(60,55,170,0.09);
+      transition: background .14s, box-shadow .12s;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    /* Pay button hover/focus states */
+    .pay-btn:focus,
+    .pay-btn:hover {
+      background: linear-gradient(90deg, #2a84e9 0%, #36b37e 100%);
+      box-shadow: 0 8px 24px 0 rgba(60,55,170,0.13);
+    }
+
+    /* Disabled pay button state */
+    .pay-btn:disabled {
+        background: #cccccc;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    /* Login status display */
+    .login-status {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #555;
+    }
+
+    /* Responsive adjustments for smaller screens */
+    @media (max-width: 500px) {
+      .payment-container {
+        max-width: 97vw;
+        margin: 10vw 1vw 0 1vw;
+        padding: 7vw 3vw 7vw 3vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="payment-container">
+    <div class="title">Payment</div>
+
+    <!-- Login status display area -->
+    <div class="login-status" id="loginStatus">
+      Checking login status...
+    </div>
+
+    <div class="summary" id="paymentSummary">
+      Loading payment details...
+    </div>
+    <div class="label">Select Payment Method</div>
+    <div class="payment-methods" id="paymentMethods">
+      <div class="method-option" data-method="GCash" tabindex="0">
+        <span class="method-icon">
+          <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#1877F2"/><text x="50%" y="52%" text-anchor="middle" fill="#fff" font-size="15" font-family="Arial" dy=".3em">G</text></svg>
+        </span>
+        GCash
+      </div>
+      <div class="method-option" data-method="PayPal" tabindex="0">
+        <span class="method-icon">
+          <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#003087"/><text x="50%" y="52%" text-anchor="middle" fill="#fff" font-size="13" font-family="Arial" dy=".3em">PP</text></svg>
+        </span>
+        PayPal
+      </div>
+      <div class="method-option" data-method="CreditCard" tabindex="0">
+        <span class="method-icon">
+          <svg width="28" height="28" viewBox="0 0 40 40" fill="none"><rect x="5" y="10" width="30" height="20" rx="4" fill="#37c9a7"/><rect x="5" y="16" width="30" height="2" fill="#fff"/><rect x="9" y="24" width="8" height="2" rx="1" fill="#fff"/></svg>
+        </span>
+        Credit/Debit Card
+      </div>
+    </div>
+    <button class="pay-btn" id="payBtn" disabled>Pay Now</button>
+  </div>
+
+  <script type="module">
+    // Firebase SDK Imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+    // Realtime Database imports
+    import { getDatabase, ref, push, set, query, orderByChild, equalTo, onValue, off } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app", // Ensure this is your Realtime Database URL
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+
+    // Initialize Firebase services
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app); // Get Realtime Database instance
+    const auth = getAuth(app);
+
+    let currentUser = null; // To store the logged-in user object from Firebase Auth
+    let unsubscribeFromSubscriptions = null; // To store the unsubscribe function for the Realtime Database listener
+
+    // Get references to UI elements
+    const loginStatusEl = document.getElementById('loginStatus');
+    const payBtn = document.getElementById('payBtn');
+    const methodEls = document.querySelectorAll('.method-option');
+    let selectedMethod = ''; // To store the currently selected payment method
+
+
+    // --- Firebase Authentication Functions ---
+
+    /**
+     * Updates the UI based on the current Firebase authentication state.
+     * @param {firebase.User|null} user - The Firebase User object if logged in, or null if logged out.
+     */
+    function updateLoginUI(user) {
+        if (user) {
+            currentUser = user;
+            const displayEmail = user.email || "Anonymous User";
+            const displayUid = user.uid.substring(0, 8) + '...'; // Display a shortened UID
+
+            // Update login status message and add a logout button
+            loginStatusEl.innerHTML = `Logged in as: <b>${displayEmail}</b> (UID: ${displayUid}) <button id="logoutBtn" style="margin-left: 10px; padding: 5px 10px; border-radius: 5px; border: 1px solid #dc3545; background: #dc3545; color: white; cursor: pointer;">Logout</button>`;
+            document.getElementById('logoutBtn').onclick = handleLogout; // Attach logout handler
+
+            // Set up real-time Realtime Database listener for the logged-in user
+            if (unsubscribeFromSubscriptions) {
+                off(unsubscribeFromSubscriptions); // Detach old listener if any
+            }
+            unsubscribeFromSubscriptions = setupRealtimeSubscriptionListener();
+
+            // If a payment method is already selected, enable the Pay Now button
+            if (selectedMethod) {
+                payBtn.disabled = false;
+            }
+
+        } else {
+            // User is logged out
+            currentUser = null;
+            loginStatusEl.innerHTML = 'Not logged in. Please log in on the <a href="advertise.html" style="color: #2a84e9;">previous page</a>.';
+            
+            // Stop any active real-time Realtime Database listener
+            if (unsubscribeFromSubscriptions) {
+                off(unsubscribeFromSubscriptions); // Detach listener
+                unsubscribeFromSubscriptions = null;
+            }
+            payBtn.disabled = true; // Disable Pay Now button if no user is logged in
+        }
+    }
+
+    /**
+     * Handles user logout from Firebase.
+     */
+    async function handleLogout() {
+        try {
+            await signOut(auth);
+            console.log("User logged out.");
+            updateLoginUI(null); // Update UI to logged out state
+            alert("You have been logged out.");
+            // Redirect back to the advertisement page after logout
+            window.location.href = 'advertise.html';
+        } catch (error) {
+            console.error("Error logging out:", error);
+            alert(`Logout failed: ${error.message}`);
+        }
+    }
+
+
+    // --- Firebase Realtime Database Related Functions ---
+
+    /**
+     * Processes a "fake" subscription payment and records it in Realtime Database.
+     * It will update an existing active subscription or create a new one.
+     * @param {string} planType - The type of plan (e.g., 'Day', 'Weekly', 'Monthly', 'Annual').
+     * @param {number} price - The price per kiosk for the selected plan.
+     * @param {number} kioskCount - The number of kiosks rented.
+     * @param {string} paymentMethod - The selected payment method (e.g., 'GCash', 'PayPal').
+     */
+    async function processFakeSubscriptionPayment(planType, price, kioskCount, paymentMethod) {
+        // Ensure a user is logged in before proceeding with payment
+        if (!currentUser) {
+            alert("Please login first to make a payment.");
+            console.error("No user logged in. Payment cannot proceed.");
+            payBtn.disabled = false; // Re-enable button if no user
+            payBtn.textContent = 'Pay Now';
+            return { success: false, error: "No user logged in." };
+        }
+
+        const userId = currentUser.uid;
+        let finalPrice = Number(price) * Number(kioskCount || 1);
+        let durationInDays = 0;
+
+        // Determine subscription duration based on plan type
+        switch (planType) {
+            case 'Day':
+                durationInDays = 1;
+                break;
+            case 'Weekly':
+                durationInDays = 7;
+                break;
+            case 'Monthly':
+                durationInDays = 30;
+                break;
+            case 'Annual':
+                durationInDays = 365;
+                break;
+            default:
+                console.error("Invalid plan type:", planType);
+                alert("Error: Invalid plan selected.");
+                payBtn.disabled = false;
+                payBtn.textContent = 'Pay Now';
+                return { success: false, error: "Invalid plan type." };
+        }
+
+        const now = new Date();
+        let startDate;
+        let endDate;
+        let existingSubscriptionKey = null;
+
+        // 1. Check for existing active subscription for the current user
+        const userSubscriptionsRef = ref(db, 'subscriptions');
+        const userActiveSubscriptionQuery = query(userSubscriptionsRef, orderByChild('userId'), equalTo(userId));
+
+        // Fetch existing subscriptions once
+        const snapshot = await new Promise(resolve => {
+            onValue(userActiveSubscriptionQuery, (snap) => {
+                resolve(snap);
+            }, { onlyOnce: true });
+        });
+
+        if (snapshot.exists()) {
+            snapshot.forEach(childSnapshot => {
+                const sub = childSnapshot.val();
+                // Assuming we update the first active subscription found for simplicity
+                // In a more complex app, you might have multiple subscriptions or specific rules for which to update.
+                if (sub.status === "active") {
+                    existingSubscriptionKey = childSnapshot.key;
+                    const currentEndDate = new Date(sub.endDate);
+                    // If current end date is in the past, start new subscription from now.
+                    // Otherwise, extend from the current end date.
+                    startDate = (currentEndDate < now) ? now.toISOString() : sub.endDate;
+                    endDate = new Date(new Date(startDate).getTime() + durationInDays * 24 * 60 * 60 * 1000).toISOString();
+                    console.log("Found existing active subscription. Extending its duration.");
+                    return true; // Break forEach loop
+                }
+            });
+        }
+
+        if (!existingSubscriptionKey) {
+            // No active subscription found, create a new one starting from now
+            startDate = now.toISOString();
+            endDate = new Date(now.getTime() + durationInDays * 24 * 60 * 60 * 1000).toISOString();
+            console.log("No active subscription found. Creating a new one.");
+        }
+
+        try {
+            let subscriptionRefToUse;
+            let subscriptionId;
+            const subscriptionData = {
+                userId: userId,
+                planType: planType,
+                price: finalPrice,
+                startDate: startDate,
+                endDate: endDate,
+                status: "active",
+                lastPaymentDate: now.toISOString(),
+                nextPaymentDate: endDate, // Next payment is when current one expires
+                kioskCount: Number(kioskCount || 1),
+                paymentMethod: paymentMethod
+            };
+
+            if (existingSubscriptionKey) {
+                // Update existing subscription
+                subscriptionRefToUse = ref(db, 'subscriptions/' + existingSubscriptionKey);
+                subscriptionId = existingSubscriptionKey;
+                await set(subscriptionRefToUse, subscriptionData); // Overwrite the existing subscription with updated data
+                console.log("Subscription updated with ID: ", subscriptionId);
+            } else {
+                // Create new subscription
+                subscriptionRefToUse = push(ref(db, 'subscriptions'));
+                subscriptionId = subscriptionRefToUse.key;
+                await set(subscriptionRefToUse, subscriptionData);
+                console.log("New subscription added with ID: ", subscriptionId);
+            }
+
+            // Always add a new payment record for each transaction
+            const paymentsRef = ref(db, 'payments');
+            const newPaymentRef = push(paymentsRef);
+            await set(newPaymentRef, {
+                subscriptionId: subscriptionId, // Link to the subscription
+                userId: userId,
+                amount: finalPrice,
+                currency: "PHP", // Assuming Philippine Pesos
+                paymentDate: now.toISOString(),
+                paymentMethod: paymentMethod,
+                status: "success",
+                transactionId: `TXN_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`
+            });
+            console.log("Payment recorded successfully.");
+
+            // Display success message and then redirect
+            alert("Payment successful! Your subscription is now active/updated.");
+            setTimeout(() => {
+                window.location.href = '../draft.html'; // Redirect to your home page
+            }, 1500); // Redirect after 1.5 seconds
+
+            return { success: true, subscriptionId: subscriptionId };
+
+        } catch (e) {
+            console.error("Error processing fake payment:", e);
+            alert(`Payment failed: ${e.message}`);
+            return { success: false, error: e.message };
+        } finally {
+            // Always re-enable the button and restore its text
+            payBtn.disabled = false;
+            payBtn.textContent = 'Pay Now';
+        }
+    }
+
+    /**
+     * Sets up a real-time Realtime Database listener for subscriptions belonging to the current user.
+     */
+    function setupRealtimeSubscriptionListener() {
+        if (!currentUser) {
+            console.warn("No user logged in, cannot set up real-time listener for subscriptions.");
+            return; // Exit if no user is logged in
+        }
+
+        const userId = currentUser.uid;
+        const subscriptionsRef = ref(db, 'subscriptions');
+        // Create a query to listen for subscriptions where the userId matches the current user's UID
+        // You'll need to index 'userId' in your Firebase Realtime Database rules for this query to be efficient.
+        const userSubscriptionsQuery = query(subscriptionsRef, orderByChild('userId'), equalTo(userId));
+
+        console.log(`Setting up real-time listener for subscriptions for user: ${userId}`);
+
+        // Attach the real-time listener. The callback receives a DataSnapshot.
+        const listenerFunction = onValue(userSubscriptionsQuery, (snapshot) => {
+            console.log("Real-time subscription update received!");
+            const subscriptions = snapshot.val(); // Get all data at this location
+
+            if (subscriptions) {
+                // Iterate through the object of subscriptions
+                Object.keys(subscriptions).forEach(key => {
+                    const subscriptionData = subscriptions[key];
+                    console.log(`Subscription ID: ${key}, Data:`, subscriptionData);
+                    // You can add logic here to update your UI based on changes
+                    // For example, check subscriptionData.status or other fields
+                });
+            } else {
+                console.log("No subscriptions found for this user.");
+            }
+        }, (error) => {
+            console.error("Error listening to subscriptions:", error);
+        });
+
+        // Return the query reference, which can be passed to `off()` to detach the listener
+        return userSubscriptionsQuery;
+    }
+
+    // --- Page Initialization and Event Handlers ---
+
+    /**
+     * Retrieves payment details from localStorage (passed from advertise.html) or URL parameters.
+     * @returns {object} An object containing plan, price, branch, kiosks details.
+     */
+    function getPaymentDetails() {
+      // Try to get from URL (for direct navigation, though localStorage is preferred)
+      const params = new URLSearchParams(window.location.search);
+      let plan = params.get('plan');
+      let price = params.get('price');
+      let branch = params.get('branch');
+      let kiosks = params.get('kiosks');
+
+      // Fallback to localStorage if URL params are not present
+      if (!plan || !price || !branch || !kiosks) {
+        plan = localStorage.getItem('ad_plan') || '';
+        price = localStorage.getItem('ad_price') || '';
+        branch = localStorage.getItem('ad_branch') || '';
+        kiosks = localStorage.getItem('ad_kiosks') || '';
+      }
+      return { plan, price, branch, kiosks };
+    }
+
+    /**
+     * Displays the payment summary in the UI.
+     */
+    function showSummary() {
+      const {plan, price, branch, kiosks} = getPaymentDetails();
+      
+      // Check if essential details are missing and display an error
+      if (!plan || !price || !branch || !kiosks) {
+          document.getElementById('paymentSummary').innerHTML = `
+            <div style="color: #dc3545; font-weight: bold;">Error: Missing payment details.</div>
+            <div>Please return to the <a href="advertise.html" style="color: #2a84e9;">Advertise Plans page</a> to select a plan and log in.</div>
+          `;
+          payBtn.disabled = true; // Disable pay button if details are incomplete
+          return;
+      }
+
+      let amt = Number(price) * Number(kiosks || 1);
+      let amountText = (amt && !isNaN(amt)) ? `₱${amt.toLocaleString()}` : '₱0';
+      let html = `
+        <div><b>Plan:</b> ${plan || '-'}</div>
+        <div><b>Branch:</b> ${branch || '-'}</div>
+        <div><b>Kiosk(s):</b> ${kiosks || '-'}</div>
+        <div style="margin-top:8px;font-size:1.15rem;">
+          <b>Total Amount:</b> <span style="color:#36b37e;font-size:1.23em;">${amountText}</span>
+        </div>
+      `;
+      document.getElementById('paymentSummary').innerHTML = html;
+    }
+
+    // Event listeners for payment method selection
+    methodEls.forEach(el => {
+      el.addEventListener('click', function() {
+        methodEls.forEach(e => e.classList.remove('selected')); // Remove 'selected' from all
+        this.classList.add('selected'); // Add 'selected' to clicked one
+        selectedMethod = this.getAttribute('data-method'); // Store selected method
+
+        // Only enable pay button if a user is logged in AND a method is selected
+        if (currentUser) {
+          payBtn.disabled = false;
+        }
+      });
+      // Handle keyboard navigation for accessibility
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.click(); // Simulate click on Enter or Space
+        }
+      });
+    });
+
+    // Pay button click handler
+    payBtn.onclick = async function() {
+      // Pre-checks before processing payment
+      if (!currentUser) {
+        alert("You must be logged in to make a payment. Please go back to the previous page to log in.");
+        return;
+      }
+      if (!selectedMethod) {
+        alert("Please select a payment method.");
+        return;
+      }
+
+      const {plan, price, branch, kiosks} = getPaymentDetails();
+      if (!plan || !price || !kiosks) {
+        alert("Error: Payment details are incomplete. Please go back and select a plan.");
+        return;
+      }
+
+      // Disable button and show processing state
+      payBtn.disabled = true;
+      payBtn.textContent = 'Processing...';
+
+      console.log(`Attempting fake payment for ${plan} plan via ${selectedMethod}...`);
+      // Call the Firebase function to process the payment
+      await processFakeSubscriptionPayment(plan, price, kiosks, selectedMethod);
+    };
+
+    // On page load: Display summary and set up Firebase Auth listener
+    document.addEventListener('DOMContentLoaded', () => {
+        showSummary(); // Display payment details from localStorage/URL
+
+        // This Firebase listener fires whenever the authentication state changes.
+        // It's crucial for automatically detecting if a user is already logged in
+        // (e.g., from advertise.html) and updating the UI accordingly.
+        onAuthStateChanged(auth, (user) => {
+            updateLoginUI(user); // Update the UI based on the detected user state
+        });
+    });
+
+  </script>
+</body>
+</html>

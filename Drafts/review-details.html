@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review Your Details</title>
+  <link rel="stylesheet" href="review-details-style/review-details-style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="review-center-main">
+    <div class="review-card">
+      <header class="review-header">
+        <img class="review-logo" src="https://via.placeholder.com/48x48?text=Logo" alt="Company Logo">
+        <div class="review-title">Review Your Details</div>
+        <div class="review-subtitle">Please confirm your business information below before proceeding.</div>
+      </header>
+      <form class="review-form" autocomplete="off" id="reviewForm">
+        <div class="review-form-row">
+          <label class="review-label" for="businessName">Business Name:</label>
+          <input class="review-input" type="text" id="businessName" name="businessName" value="N/A" readonly>
+          <button type="button" class="review-change-btn" aria-label="Change Business Name" data-edit="business-info-input-panel.html">&#9998;</button>
+        </div>
+        <div class="review-form-row">
+          <label class="review-label" for="product">Product:</label>
+          <input class="review-input" type="text" id="product" name="product" value="N/A" readonly>
+          <button type="button" class="review-change-btn" aria-label="Change Product" data-edit="business-info-input-panel.html">&#9998;</button>
+        </div>
+        <div class="review-form-row">
+          <label class="review-label" for="tagline">Tagline:</label>
+          <input class="review-input" type="text" id="tagline" name="tagline" value="N/A" readonly>
+          <button type="button" class="review-change-btn" aria-label="Change Tagline" data-edit="business-info-input-panel.html">&#9998;</button>
+        </div>
+        <div class="review-form-row">
+          <label class="review-label" for="fundingGoal">Funding Goal:</label>
+          <input class="review-input" type="text" id="fundingGoal" name="fundingGoal" value="N/A" readonly>
+          <button type="button" class="review-change-btn" aria-label="Change Funding Goal" data-edit="business-purpose-input-panel.html">&#9998;</button>
+        </div>
+        <div class="review-form-row">
+          <label class="review-label" for="purpose">Purpose:</label>
+          <input class="review-input" type="text" id="purpose" name="purpose" value="N/A" readonly>
+          <button type="button" class="review-change-btn" aria-label="Change Purpose" data-edit="business-purpose-input-panel.html">&#9998;</button>
+        </div>
+        <!-- Add this for "Other" explanation -->
+        <div class="review-form-row" id="otherPurposeRow" style="display:none;">
+          <label class="review-label" for="otherPurposeExplanation">Other Explanation:</label>
+          <textarea class="review-input" id="otherPurposeExplanation" name="otherPurposeExplanation" rows="2" readonly style="resize:none;"></textarea>
+        </div>
+        <button type="submit" class="review-process-btn">Process</button>
+      </form>
+    </div>
+  </main>
+  <script>
+    // Prefill inputs from localStorage
+    document.getElementById("businessName").value = localStorage.getItem("businessName") || "N/A";
+    document.getElementById("product").value = localStorage.getItem("product") || "N/A";
+    document.getElementById("tagline").value = localStorage.getItem("tagline") || "N/A";
+    // Add peso sign to funding goal if present and not N/A
+    const fundingRaw = localStorage.getItem("funding");
+    document.getElementById("fundingGoal").value = fundingRaw && fundingRaw !== "N/A" ? ("₱" + fundingRaw) : "N/A";
+    document.getElementById("purpose").value = localStorage.getItem("purpose") || "N/A";
+
+    // Show "Other" explanation if needed
+    const purposeValue = localStorage.getItem("purpose") || "N/A";
+    const otherPurposeRow = document.getElementById("otherPurposeRow");
+    const otherPurposeExplanation = document.getElementById("otherPurposeExplanation");
+    if (purposeValue === "Other") {
+      const otherPurpose = localStorage.getItem("otherPurpose") || "";
+      otherPurposeRow.style.display = "";
+      otherPurposeExplanation.value = otherPurpose;
+    } else {
+      otherPurposeRow.style.display = "none";
+      otherPurposeExplanation.value = "";
+    }
+
+    // Change buttons for editing
+    document.querySelectorAll('.review-change-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        const editTarget = btn.getAttribute('data-edit');
+        if (editTarget) {
+          window.location.href = editTarget;
+        }
+      });
+    });
+
+    // Process button (submit)
+    document.getElementById("reviewForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      // Optional: validation or a confirmation modal
+      // Fancy aesthetic next-step message!
+      if (typeof Swal === "function") {
+        Swal.fire({
+          title: 'Almost there!',
+          text: "You're just one step away from completing your business profile. Click proceed to finalize your application.",
+          icon: 'success',
+          confirmButtonText: 'Proceed',
+          confirmButtonColor: '#2b1f6f',
+          background: '#f8fafc',
+          color: '#23405c'
+        }).then(() => {
+          window.location.href = "printing.html";
+        });
+      } else {
+        window.location.href = "printing.html";
+      }
+    });
+  </script>
+</body>
+</html>

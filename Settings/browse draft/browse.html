@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Browse - InvestMarket</title>
+  <link rel="stylesheet" href="browse.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+<nav>
+  <div class="navbar">
+    <!-- Left -->
+    <ul class="nav-side nav-left">
+      <li class="nav-link"><a href="#">Home</a></li>
+      <li class="nav-link dropdown-parent">
+        <button aria-haspopup="true" aria-expanded="false">Advertise</button>
+        <div class="dropdown" role="menu">
+          <a href="#">How it Works</a>
+          <a href="#">Challenges</a>
+        </div>
+      </li>
+    </ul>
+    <!-- Center -->
+    <div class="logo">InvestMarket</div>
+    <!-- Right -->
+    <div class="nav-side nav-right">
+      <form id="navbar-search-form" style="margin:0; display: flex; align-items: center;">
+        <input class="navbar-search-box" id="navbar-search" type="text" placeholder="Search products..." autocomplete="off" style="margin-right:1em;">
+        <button class="nav-icon-btn" id="navbar-search-btn" aria-label="Search" type="submit">
+          <span class="icon search-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" 
+              xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="7" stroke="#fff" stroke-width="2"/>
+              <line x1="15.293" y1="15.707" x2="20" y2="20" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </button>
+      </form>
+      <a href="#" class="get-started-btn" style="margin-left:1em;">Get Started</a>
+    </div>
+    <!-- Hamburger for mobile -->
+    <div class="hamburger" id="hamburger" aria-label="Open menu" tabindex="0">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+  <!-- Mobile menu (shown on small screens) -->
+  <div class="mobile-nav" id="mobileNav">
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li>
+        <button class="mobile-drop-btn">Advertise</button>
+        <div class="mobile-dropdown">
+          <a href="#">How it Works</a>
+          <a href="#">Challenges</a>
+        </div>
+      </li>
+      <li><a href="#" class="get-started-btn">Get Started</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="trend-section">
+  <div class="trend-title">🔥 What's Trending Today</div>
+  <div class="trend-carousel" id="trend-carousel">
+    <!-- Example trending product cards, can be replaced with JS -->
+    <div class="trend-product-card">
+      <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="Trending Product">
+      <div class="trend-prod-title">Minimalist Leather Wallet</div>
+      <div class="trend-prod-desc">Hand-stitched, ultra-slim, RFID protection. Trending among young professionals!</div>
+      <a href="#" class="trend-invest-btn">Invest Now</a>
+    </div>
+    <div class="trend-product-card">
+      <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80" alt="Trending Product">
+      <div class="trend-prod-title">Eco Earbuds</div>
+      <div class="trend-prod-desc">Compostable, hi-fi, water-resistant earbuds. Backed by 400+ investors.</div>
+      <a href="#" class="trend-invest-btn">Invest Now</a>
+    </div>
+    <div class="trend-product-card">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Trending Product">
+      <div class="trend-prod-title">Abstract Canvas Art</div>
+      <div class="trend-prod-desc">Vibrant modern palette, perfect for contemporary spaces. 90% funded.</div>
+      <a href="#" class="trend-invest-btn">Invest Now</a>
+    </div>
+  </div>
+</div>
+
+<div class="showcase-section">
+  <div class="showcase-title">Featured Investment Opportunity</div>
+  <div class="showcase-product">
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Product Showcase">
+    <div class="showcase-info">
+      <div class="showcase-prod-title">Painted Ceramic Mug</div>
+      <div class="showcase-prod-meta">by Clara &middot; Craft</div>
+      <div class="showcase-prod-desc">
+        Each mug is individually hand-thrown and painted, so every piece is unique. Dishwasher and microwave safe. Eco-fired. <b>Only 20 left!</b>
+      </div>
+      <div class="showcase-stats">
+        <span>Investments: <b>1</b></span>
+        <span>Rating: <b>★★★★☆</b></span>
+        <span>Range: <b>Under $100</b></span>
+      </div>
+      <a href="#" class="showcase-invest-btn">Invest Now</a>
+    </div>
+  </div>
+</div>
+
+<h2>Browse Results</h2>
+<div class="products-list" id="products-list"></div>
+
+<script>
+  // Navbar dropdowns
+  document.querySelectorAll('.dropdown-parent').forEach(link => {
+    const dropdown = link.querySelector('.dropdown');
+    if (dropdown) {
+      let timeoutId;
+      link.addEventListener('mouseenter', () => {
+        clearTimeout(timeoutId);
+        dropdown.style.display = 'flex';
+      });
+      link.addEventListener('mouseleave', () => {
+        timeoutId = setTimeout(() => {
+          dropdown.style.display = 'none';
+        }, 120);
+      });
+      link.addEventListener('focusin', () => {
+        dropdown.style.display = 'flex';
+      });
+      link.addEventListener('focusout', () => {
+        setTimeout(() => {
+          if (!link.contains(document.activeElement)) {
+            dropdown.style.display = 'none';
+          }
+        }, 100);
+      });
+    }
+  });
+  // Hamburger menu toggle
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  if (hamburger && mobileNav) {
+    hamburger.addEventListener('click', () => {
+      mobileNav.classList.toggle('open');
+    });
+  }
+  // Mobile dropdown
+  document.querySelectorAll('.mobile-drop-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.mobile-drop-btn').forEach(b => {
+        if (b !== btn) b.classList.remove('open');
+      });
+      btn.classList.toggle('open');
+      const dropdown = btn.nextElementSibling;
+      if (dropdown) {
+        dropdown.style.display = btn.classList.contains('open') ? 'flex' : 'none';
+      }
+    });
+  });
+
+  // --- Firebase + Search Integration ---
+  // Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyA2kNUF7lU2pJvAhyX6WkH5vTQqk3H1z2o",
+    authDomain: "scaleup-1269e.firebaseapp.com",
+    projectId: "scaleup-1269e",
+    storageBucket: "scaleup-1269e.appspot.com",
+    messagingSenderId: "814069465313",
+    appId: "1:814069465313:web:2bf8f2e0f5d4bce2b49e7b"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  function getQueryParam(param) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(param) || "";
+  }
+
+  async function loadProducts(searchTerm) {
+    const productsList = document.getElementById('products-list');
+    productsList.innerHTML = "Loading...";
+    const search = searchTerm.trim().toLowerCase();
+    if (!search) {
+      productsList.innerHTML = "<em>Please provide a search term.</em>";
+      return;
+    }
+    try {
+      // For best results, ensure your "products" documents contain a "name_lowercase" field.
+      const querySnapshot = await db.collection("products")
+        .where("name_lowercase", ">=", search)
+        .where("name_lowercase", "<=", search + "\uf8ff")
+        .get();
+
+      if (querySnapshot.empty) {
+        productsList.innerHTML = "<em>No products found for '<b>" + searchTerm + "</b>'</em>";
+      } else {
+        let html = "";
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          html += `
+            <div class="product-card">
+              <img src="${data.imageUrl || 'https://via.placeholder.com/80'}" alt="${data.name}">
+              <div class="product-title">${data.name}</div>
+              <div class="product-desc">${data.description || ""}</div>
+            </div>
+          `;
+        });
+        productsList.innerHTML = html;
+      }
+    } catch (e) {
+      productsList.innerHTML = "<em>Error fetching products.</em>";
+      console.error(e);
+    }
+  }
+
+  // On load, get search param and show products
+  const searchTerm = getQueryParam("search");
+  document.getElementById('navbar-search').value = searchTerm;
+  loadProducts(searchTerm);
+
+  // Navbar search: live filtering without reload (Optional: you can keep the reload if you want)
+  document.getElementById('navbar-search-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const val = document.getElementById('navbar-search').value.trim();
+    // If you want reload-on-search, use this:
+    // window.location.href = `browse.html?search=${encodeURIComponent(val)}`;
+    // If you want dynamic search (no reload), use this:
+    loadProducts(val);
+    // Optionally update the URL without reload:
+    if (history.pushState) {
+      const url = new URL(window.location);
+      if (val) {
+        url.searchParams.set('search', val);
+      } else {
+        url.searchParams.delete('search');
+      }
+      window.history.replaceState({}, '', url);
+    }
+  });
+</script>
+</body>
+</html>

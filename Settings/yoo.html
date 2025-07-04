@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Temporary Firebase Sign-In</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #f6f8fb 65%, #e7eafd 100%);
+      font-family: 'Builder Sans', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+      min-height: 100vh;
+      margin: 0; padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #test-signin {
+      max-width: 350px;
+      margin: 32px auto 0 auto;
+      background: #fff8;
+      border-radius: 10px;
+      padding: 24px 18px 16px 18px;
+      box-shadow: 0 2px 14px #c7d6ff29;
+      text-align: center;
+      width: 100%;
+    }
+    #test-signin h2 {
+      font-family: inherit;
+      font-size: 1.2em;
+      color: #31418a;
+      margin-bottom: 18px;
+    }
+    #test-signin input[type="email"],
+    #test-signin input[type="password"] {
+      width: 93%;
+      padding: 7px 8px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      border: 1px solid #dbe4fa;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+    #test-signin-btn {
+      width: 100%;
+      background: #2469c2;
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      padding: 8px 0;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+    #test-signin-btn:hover {
+      background: #3056cd;
+    }
+    #test-signin-msg {
+      margin-top: 9px;
+      font-size: 0.97em;
+      color: #e53935;
+      height: 1.4em;
+      min-height: 1.4em;
+      transition: color 0.15s;
+    }
+    #signout-btn {
+      margin-top: 18px;
+      padding: 8px 24px;
+      background: #e4eafd;
+      color: #2469c2;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.12s,color 0.12s;
+    }
+    #signout-btn:hover {
+      background: #d2dbf8;
+      color: #174a8a;
+    }
+  </style>
+  <!-- Firebase SDKs (only needed once, remove if already included elsewhere) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div id="test-signin" style="display:none;">
+    <h2>Sign In to Continue</h2>
+    <input id="test-email" type="email" placeholder="Email"><br>
+    <input id="test-password" type="password" placeholder="Password"><br>
+    <button id="test-signin-btn">Sign In</button>
+    <div id="test-signin-msg"></div>
+  </div>
+  <div id="signed-in-state" style="display:none;max-width:350px;margin:24px auto 0 auto;text-align:center;">
+    <div style="background:#dcf0e7;border-radius:10px;padding:18px 12px;box-shadow:0 2px 14px #c7d6ff18;">
+      <span style="font-size:1.1em;font-weight:600;color:#24974e;">Signed in as:</span>
+      <div id="signed-in-email" style="margin:7px 0 13px 0;font-weight:500;color:#2469c2;"></div>
+      <button id="signout-btn">Sign Out</button>
+    </div>
+  </div>
+  <script>
+    // Your Firebase config (from your project)
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+
+    // Show sign-in if not logged in, show info and sign-out if logged in
+    firebase.auth().onAuthStateChanged(function(user) {
+      var signinDiv = document.getElementById('test-signin');
+      var signedInDiv = document.getElementById('signed-in-state');
+      var emailDiv = document.getElementById('signed-in-email');
+      if (!user) {
+        signinDiv.style.display = 'block';
+        signedInDiv.style.display = 'none';
+      } else {
+        signinDiv.style.display = 'none';
+        if(emailDiv) emailDiv.textContent = user.email;
+        signedInDiv.style.display = 'block';
+        // Redirect to settings.html after successful sign in (optional: delay for UX)
+        setTimeout(function() {
+          window.location.href = "Settings.html";
+        }, 1100);
+      }
+    });
+
+    document.getElementById('test-signin-btn').onclick = async function() {
+      const email = document.getElementById('test-email').value.trim();
+      const password = document.getElementById('test-password').value;
+      const msg = document.getElementById('test-signin-msg');
+      msg.textContent = '';
+      msg.style.color = "#e53935";
+      if(!email || !password) { msg.textContent = "Enter email and password."; return; }
+      try {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+        msg.style.color="#24974e"; msg.textContent = "Signed in! Redirecting...";
+        // The redirect to settings.html happens in the onAuthStateChanged above
+      } catch(e) {
+        msg.textContent = e.message.replace("Firebase: ", "");
+      }
+    };
+
+    document.getElementById('signout-btn').onclick = async function() {
+      await firebase.auth().signOut();
+      location.reload();
+    };
+  </script>
+</body>
+</html>

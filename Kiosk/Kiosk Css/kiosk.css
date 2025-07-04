@@ -1,0 +1,63 @@
+
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      font-family: sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      cursor: pointer;
+    }
+    .logo-group {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .rectangle {
+      width: 39px;
+      height: 37px;
+      background-color: #000;
+    }
+    .brand {
+      font-family: 'Nosifer', cursive;
+      font-size: 30px;
+      letter-spacing: 0.2em;
+      color: #000;
+    }
+    .title {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Lilita One', cursive;
+  font-size: 7vw;
+  text-align: center;
+  color: #000;
+  line-height: 1.2;
+}
+.subtitle {
+  position: absolute;
+  top: 72%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'IM FELL Great Primer', serif;
+  font-size: 3vw;
+  letter-spacing: 0.2em;
+  color: #000;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 10vw;
+  }
+  .subtitle {
+    font-size: 5vw;
+  }
+}
+

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Scale Up</title>
+  <link rel="stylesheet" href="create-account-styles/create-account-base.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- SweetAlert2 for Toasts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    /* OPTIONAL: Extra style for SweetAlert2 toast */
+    .scaleup-toast {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 1.07em;
+      background: linear-gradient(90deg, #e0f7fa 0%, #b2ebf2 100%);
+      color: #006064;
+    }
+    .swal2-icon-success {
+      color: #388e3c !important;
+      border-color: #388e3c !important;
+    }
+
+    /* Custom modal overlay (transparent background) */
+    .howitworks-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 41, 59, 0.4);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .howitworks-modal-box {
+      max-width: 440px;
+      background: rgba(255,255,255,0.98);
+      border-radius: 18px;
+      box-shadow: 0 8px 40px 0 #0003;
+      font-family: 'Inter', sans-serif;
+      padding: 2.2rem 2rem 1.6rem 2rem;
+      position: relative;
+      animation: popIn .3s cubic-bezier(.65,1.6,.24,1) both;
+    }
+    @keyframes popIn {
+      0% { transform: scale(.9); opacity: 0; }
+      85% { transform: scale(1.04); opacity: 1;}
+      100% { transform: scale(1); opacity: 1;}
+    }
+    .howitworks-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 1.7rem;
+      color: #64748b;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      transition: color 0.15s;
+      z-index: 1;
+      line-height: 1;
+    }
+    .howitworks-modal-close:hover {
+      color: #dc2626;
+    }
+    /* Modal content styling */
+    .howitworks-modal-box .title {
+      font-size: 1.38em;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 0.7em;
+      text-align: center;
+    }
+    .howitworks-modal-box .section {
+      font-size: 0.90em;
+      color: #34425a;
+      margin-bottom: 1em;
+      line-height: 1.5;
+    }
+    .howitworks-modal-box .section .step-title {
+      display: block;
+      font-size: 0.95em;
+      font-weight: 600;
+      color: #34425a;
+      margin-bottom: .18em;
+    }
+    .howitworks-modal-box .section.highlight {
+      color: #308ee0;
+      font-weight: 600;
+      margin-bottom: 1.2em;
+      text-align: center;
+    }
+    @media (max-width: 520px) {
+      .howitworks-modal-box { max-width: 97vw; padding: 1.2rem 0.7rem 1.2rem 0.7rem;}
+    }
+  </style>
+</head>
+<body>
+    <main class="create-account-center-main">
+        <div class="create-account-card">
+        <div class="create-account-center-content">
+            <img class="create-account-logo" src="https://via.placeholder.com/25x25?text=Logo" alt="Logo Placeholder" />
+            <h1 class="create-account-title">Welcome to Scale Up</h1>
+            <p class="create-account-subtitle">Whether you're just starting or already on your path,<br> we're here to help</p>
+            <button class="create-account-btn-primary" id="createAccountBtn">Create my account</button>
+            <button class="create-account-btn-secondary" id="howItWorksBtn" type="button">How it works</button>
+            <button class="create-account-link" id="already" type="button" >I already have an account</button>
+        </div>
+        </div>
+    </main>
+    <!-- Modal HTML, hidden by default -->
+    <div id="howItWorksModal" class="howitworks-modal-overlay" style="display:none;">
+      <div class="howitworks-modal-box" role="dialog" aria-modal="true" aria-labelledby="howitworks-modal-title">
+        <button class="howitworks-modal-close" aria-label="Close" id="closeHowItWorksBtn">&times;</button>
+        <div class="title" id="howitworks-modal-title">How It Works</div>
+        <div class="section">
+          ScaleUp helps micro-entrepreneurs like you get the capital you need to scale. It’s simple to start your journey!
+        </div>
+        <div class="section highlight">Grow Your Business, With Our Community!</div>
+        <div class="section">
+          <span class="step-title"><strong>STEP 1:</strong> Share Your Product</span>
+          Visit a ScaleUp Kiosk. Submit a sample of your best product and tell us your business name and what you need funding for. It’s quick and easy!
+        </div>
+        <div class="section">
+          <span class="step-title"><strong>STEP 2:</strong> We Launch Your Campaign Online</span>
+          Our team takes professional photos of your product and creates a compelling story for your online campaign page on our website.
+        </div>
+        <div class="section">
+          <span class="step-title"><strong>STEP 3:</strong> Get Support from Our Community</span>
+          People browse our website, see your amazing product at the kiosks, and choose to support your business! They can donate, or pre-order your products.
+        </div>
+        <div class="section">
+          <span class="step-title"><strong>STEP 4:</strong> Get Your Capital & Scale Smarter!</span>
+          Once your goal is reached, you receive the capital! Use it to buy materials, upgrade equipment, or expand your reach. ScaleUp helps you grow!
+        </div>
+        <div class="section highlight">
+          Ready to Grow?<br>
+          Join ScaleUp today and let’s make your business dream a reality!
+        </div>
+      </div>
+    </div>
+</body>
+<script>
+    document.getElementById("createAccountBtn").addEventListener("click", function(e) {
+      // Show SweetAlert2 toast
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true,
+        icon: 'success',
+        title: 'Wonderful, let\'s create your account!!',
+        customClass: {
+          popup: 'scaleup-toast'
+        }
+      });
+      // After toast, redirect
+      setTimeout(function() {
+        window.location.href = "create-account-info-panel.html";
+      }, 1700);
+    });
+
+    // Modal logic for "How it works"
+    const howItWorksBtn = document.getElementById("howItWorksBtn");
+    const howItWorksModal = document.getElementById("howItWorksModal");
+    const closeHowItWorksBtn = document.getElementById("closeHowItWorksBtn");
+
+    howItWorksBtn.addEventListener("click", function() {
+      howItWorksModal.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    });
+
+    closeHowItWorksBtn.addEventListener("click", function() {
+      howItWorksModal.style.display = "none";
+      document.body.style.overflow = "";
+    });
+
+    // Allow closing modal with Escape key or clicking outside modal
+    document.addEventListener("keydown", function(e) {
+      if (howItWorksModal.style.display === "flex" && e.key === "Escape") {
+        howItWorksModal.style.display = "none";
+        document.body.style.overflow = "";
+      }
+    });
+    howItWorksModal.addEventListener("click", function(e) {
+      if (e.target === howItWorksModal) {
+        howItWorksModal.style.display = "none";
+        document.body.style.overflow = "";
+      }
+    });
+
+   document.getElementById("already").addEventListener("click", function(e) {
+  window.location.href = "login.html"; // Redirect to login page
+});
+</script>
+</html>

@@ -1,0 +1,234 @@
+.account-main-center {
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+
+.sections-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  width: 100%;
+  margin: 0;
+  padding: 36px 0 0 0;
+  box-sizing: border-box;
+  align-items: flex-start;
+  background: none;
+  max-width: 100%;
+}
+
+.profile-section,
+.required-section {
+  width: 100%;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 0;
+  box-sizing: border-box;
+}
+
+.account-header {
+  width: 100%;
+  background: none;
+  padding: 28px 0 8px 0;
+  border-bottom: none;
+  box-sizing: border-box;
+}
+
+.account-title {
+  font-family: inherit;
+  font-size: 2.05rem;
+  font-weight: 800;
+  color: #191919;
+  margin: 0 0 0.25em 0;
+  padding: 0;
+  text-align: left;
+  letter-spacing: 0;
+}
+
+.notification {
+  background: #f3f3f3;
+  color: #1a1a1a;
+  font-size: 1.08rem;
+  padding: 1.1em 2em;
+  border-radius: 0.5em;
+  margin: 24px 0 0 0;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  border-left: 4px solid #bbb;
+  max-width: 100%;
+  min-width: 0;
+  font-family: inherit;
+  text-align: left;
+}
+
+.section-label {
+  font-size: 1.17rem;
+  font-weight: 700;
+  color: #191919;
+  margin: 0 0 18px 0;
+  letter-spacing: 0;
+  font-family: inherit;
+  border: none;
+  background: none;
+  padding: 0;
+  text-align: left;
+  display: block;
+}
+
+.info-row,
+.required-row,
+.social-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 17px 0;
+  background: none;
+  border-bottom: 1px solid #e5eaf2;
+  border-radius: 0;
+  margin: 0;
+  font-size: 1.04rem;
+  transition: background 0.15s;
+  gap: 0;
+}
+.info-row:last-child,
+.required-row:last-child,
+.social-row:last-child {
+  border-bottom: none;
+}
+
+.info-label,
+.required-field-label,
+.social-label {
+  font-family: inherit;
+  font-size: 1.04rem;
+  font-weight: 600;
+  color: #191919;
+  margin: 0;
+  min-width: 175px;
+  max-width: 220px;
+  text-align: left;
+  flex: 0 0 180px;
+  word-break: break-word;
+  padding: 0 18px 0 0;
+  letter-spacing: 0;
+  line-height: 1.4;
+  background: none;
+  border: none;
+}
+
+/* Editable fields */
+.editable-field {
+  font-family: inherit;
+  font-size: 1.04rem;
+  color: #191919;
+  background: #f7f7fa;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-weight: 400;
+  text-align: left;
+  flex: 1 1 auto;
+  margin: 0;
+  border: 1px solid #e0e3ee;
+  min-width: 0;
+  word-break: break-word;
+  line-height: 1.5;
+  transition: border-color 0.14s;
+}
+.editable-field:focus {
+  outline: none;
+  border-color: #206be6;
+  background: #f5faff;
+}
+
+.unchangeable,
+.required-blank {
+  font-family: inherit;
+  font-size: 1.04rem;
+  color: #191919;
+  background: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  font-weight: 400;
+  text-align: left;
+  flex: 1 1 auto;
+  margin: 0;
+  border: none;
+  min-width: 0;
+  word-break: break-word;
+  line-height: 1.5;
+}
+.unchangeable[style*="background:#fff8e1"] {
+  background: #fff8e1 !important;
+  color: #a17a00 !important;
+  border: none;
+}
+.social-label {
+  min-width: 110px;
+  flex: 0 0 110px;
+  padding-right: 16px;
+}
+.required-row[style*="margin-bottom:0"] {
+  margin-bottom: 0 !important;
+}
+.info-row:hover,
+.required-row:hover,
+.social-row:hover {
+  background: #f7faff;
+}
+
+/* Responsive: still flush left on mobile */
+@media (max-width: 900px) {
+  .account-main-center {
+    padding: 0;
+    max-width: 100vw;
+  }
+  .sections-flex {
+    max-width: 100vw;
+    padding: 18px 0 0 0;
+    gap: 18px;
+  }
+  .info-label, .required-field-label, .social-label {
+    min-width: 100px;
+    max-width: 140px;
+    flex-basis: 100px;
+    padding-right: 8px;
+    font-size: 0.99rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .account-header { padding: 16px 0 8px 0; }
+  .sections-flex { padding: 8px 0 0 0; gap: 0; }
+  .account-title { font-size: 1.17rem; }
+  .notification { margin-left: 0; margin-right: 0; font-size: 0.97rem; }
+  .info-row, .required-row, .social-row {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid #e5eaf2;
+    font-size: 0.98rem;
+  }
+  .info-label, .required-field-label, .social-label {
+    min-width: unset;
+    max-width: unset;
+    flex-basis: unset;
+    padding: 0 0 5px 0;
+    font-size: 0.98rem;
+  }
+  .editable-field, .unchangeable, .required-blank {
+    font-size: 0.98rem;
+    padding: 0;
+    width: 100%;
+    text-align: left;
+  }
+}

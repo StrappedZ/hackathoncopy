@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+
+:root {
+  /* --color-bg-gradient: linear-gradient(135deg, #22284a 0%, #355c7d 60%, #46bfae 100%); */
+  /* Option 1: Deep night blue to cyan */
+  /* --color-bg-gradient: linear-gradient(135deg, #1a237e 0%, #283593 60%, #00bcd4 100%); */
+
+  /* Option 2: Soft dusk blues*/
+  /* --color-bg-gradient: linear-gradient(135deg, #2948ff 0%, #396afc 50%, #5f2c82 100%); */
+
+  /* Option 3: Light blue mist */
+  /* --color-bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); */
+
+  /* Option 4: Oceanic blues */
+  /* --color-bg-gradient: linear-gradient(135deg, #355c7d 0%, #6c5b7b 50%, #2980b9 100%); */
+
+  /* Option 5: Vibrant electric blue */
+  /* --color-bg-gradient: linear-gradient(135deg, #0f2027 0%, #2c5364 60%, #36d1c4 100%); */
+
+  /* Option 6: Calm sky blue */
+  /* --color-bg-gradient: linear-gradient(135deg, #74ebd5 0%, #2bcbba 100%);  */
+
+  /* Old: --color-bg-gradient: linear-gradient(135deg, #355c7d 0%, #6c5b7b 50%, #2980b9 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #4a379c 50%, #2980b9 100%); */
+
+/* Old: --color-bg-gradient: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #e0eafc 60%, #cfdef3 100%); */
+
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #355c7d 60%, #46bfae 100%);
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #1e3c72 50%, #2a5298 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #283e51 100%); */
+--color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #232526 60%, #414345 100%);
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #485563 50%, #29323c 100%); */
+
+
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #5f2c82 50%, #49a09d 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #1c92d2 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #2980b9 60%, #6dd5fa 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #0f2027 50%, #2c5364 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #00c6fb 50%, #005bea 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #485563 60%, #00b4db 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #1CB5E0 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #43cea2 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #5B86E5 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #2b5876 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #1488CC 60%, #2B32B2 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #134E5E 50%, #71B280 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #2b5876 50%, #4e4376 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #00b4db 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #0575E6 50%, #021B79 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #4776E6 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #6a82fb 60%, #fc5c7d 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #00c3ff 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #283e51 50%, #485563 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #4e54c8 60%, #8f94fb 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #004e92 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #0099f7 60%, #f11712 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #0b486b 60%, #f56217 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #2c3e50 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #1e3c72 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #0f2027 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #396afc 60%, #2948ff 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #3a6073 60%, #16222a 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #355c7d 50%, #6c5b7b 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #1e3c72 50%, #2a5298 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #6dd5ed 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #0b8793 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #243B55 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #373b44 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #4568dc 60%, #b06ab3 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #06beb6 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #43cea2 60%, #185a9d 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #43cea2 60%, #185a9d 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #005aa7 60%, #fffde4 100%); */
+/* --color-bg-gradient: linear-gradient(135deg, #2B1F6F 0%, #e0eafc 60%, #cfdef3 100%);   */
+
+
+  --color-box-bg: #fff;
+  --color-title: #22284a;
+  --color-subtitle: #5e6b85;
+  --color-btn-primary-bg: #46bfae;
+  --color-btn-primary-text: #22284a;
+  --color-btn-secondary-bg: #fff;
+  --color-btn-secondary-text: #355c7d;
+  --color-link: #355c7d;
+
+  --card-border-size:1px;
+  --color-card-border: #f0f0f0;
+  --btn-radius: 28px;
+  --btn-padding-v: 22px;
+  --btn-font-size: 1.45rem;
+  --title-size: 4.2rem;
+  --subtitle-size: 1rem;
+  --main-gap: 38px;
+  --content-width: 98vw;
+  --content-max-width: 580px;
+  --card-radius: 32px;
+  --card-padding: 62px 54px;
+  --card-shadow: 0 8px 48px 0 rgba(34,40,74,0.22), 0 2.5px 20px 0 rgba(70,191,174,0.13);
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: var(--color-bg-gradient);
+  color: var(--color-title);
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-account-center-main {
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-account-card {
+  background: var(--color-box-bg);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  width: var(--content-width);
+  max-width: var(--content-max-width);
+  padding: var(--card-padding);
+  border: solid var(--card-border-size) var(--color-card-border);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.create-account-center-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--main-gap);
+}
+
+/* Logo placeholder styling - NO margin or padding */
+.create-account-logo {
+  display: block;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 5px;
+  background: #f6f8fa;
+  box-shadow: 0 1px 5px #22284a22;
+}
+
+/* Remove margin above/below title so it's flush with logo */
+.create-account-title {
+  font-size: var(--title-size);
+  font-weight: 800;
+  color: var(--color-title);
+  text-align: center;
+  margin: -35px 0 -40px 0; /* Only bottom margin for spacing to subtitle */
+  line-height: 1.13;
+  letter-spacing: -0.01em;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+.create-account-subtitle {
+  font-size: var(--subtitle-size);
+  color: var(--color-subtitle);
+  text-align: center;
+  margin: 10px 0 -15px 0;
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+.create-account-btn-primary {
+  width: 100%;
+  padding: var(--btn-padding-v) 0;
+  background: var(--color-btn-primary-bg);
+  color: var(--color-btn-primary-text);
+  border: none;
+  border-radius: var(--btn-radius);
+  font-weight: 700;
+  font-size: var(--btn-font-size);
+  margin-bottom: 0%;
+  box-shadow: 0 3px 18px #355c7d24;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  text-transform: capitalize;
+}
+.create-account-btn-primary:hover,
+.create-account-btn-primary:focus {
+  background: #3bc6b0;
+  color: #fff;
+  box-shadow: 0 8px 32px #46bfae44;
+}
+
+.create-account-btn-secondary {
+  width: 100%;
+  padding: var(--btn-padding-v) 0;
+  background: var(--color-btn-secondary-bg);
+  color: var(--color-btn-secondary-text);
+  border: 3px solid var(--color-btn-secondary-text);
+  border-radius: var(--btn-radius);
+  font-weight: 800;
+  font-size: var(--btn-font-size);
+  margin: -25px 0 0 0; /* Adjusted to align with primary button */
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  text-transform: capitalize;
+}
+.create-account-btn-secondary:hover,
+.create-account-btn-secondary:focus {
+  background: #e1e7ef;
+  color: #22284a;
+  border-color: #22284a;
+}
+
+.create-account-link {
+  background: none;
+  border: none;
+  color: var(--color-link);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1.18rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+  transition: color 0.18s;
+  letter-spacing: 0.01em;
+}
+.create-account-link:hover,
+.create-account-link:focus {
+  color: #46bfae;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+  :root {
+    --title-size: 2.1rem;
+    --subtitle-size: 1.05rem;
+    --btn-padding-v: 13px;
+    --btn-font-size: 1.1rem;
+    --content-max-width: 97vw;
+    --main-gap: 20px;
+    --card-padding: 28px 8vw;
+    --card-radius: 19px;
+  }
+  .create-account-logo {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+  }
+}
+@media (max-width: 500px) {
+  :root {
+    --title-size: 1.5rem;
+    --subtitle-size: 0.97rem;
+    --btn-padding-v: 9px;
+    --btn-font-size: 0.95rem;
+    --content-max-width: 99vw;
+    --main-gap: 12px;
+    --card-padding: 13px 3vw;
+    --card-radius: 12px;
+  }
+  .create-account-logo {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+  }
+}

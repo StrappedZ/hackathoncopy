@@ -1,0 +1,68 @@
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      font-family: 'IM FELL Great Primer', serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    .header {
+      font-family: 'Lilita One', cursive;
+      font-size: 4vw;
+      letter-spacing: 0.1em;
+      color: #000;
+      text-align: center;
+      margin-bottom: 2vh;
+    }
+    .subtext {
+      font-size: 2vw;
+      text-align: center;
+      letter-spacing: 0.1em;
+      margin: 1vh 0;
+      max-width: 90vw;
+      color: #000;
+    }
+    .highlight {
+      font-size: 1.8vw;
+      margin: 1vh 0;
+      letter-spacing: 0.1em;
+      max-width: 90vw;
+      text-align: center;
+    }
+    .line {
+      width: 80vw;
+      max-width: 1000px;
+      border-top: 1px solid #000;
+      margin: 3vh 0;
+    }
+    .archive-icon {
+      font-size: 10vw;
+      margin: 3vh 0;
+      color: #333;
+    }
+    .submit-btn {
+      background-color: #483D8B;
+      color: #fff;
+      font-size: 2vw;
+      border: none;
+      border-radius: 15px;
+      padding: 2vh 4vw;
+      cursor: pointer;
+      margin-top: 5vh;
+      font-family: 'IM FELL Great Primer', serif;
+      letter-spacing: 0.1em;
+    }
+    .submit-btn:hover {
+      background-color: #3a3273;
+    }
+    @media(max-width: 768px) {
+      .header { font-size: 8vw; }
+      .subtext { font-size: 4vw; }
+      .highlight { font-size: 4vw; }
+      .submit-btn { font-size: 5vw; padding: 2vh 6vw; }
+      .archive-icon { font-size: 20vw; }
+    }

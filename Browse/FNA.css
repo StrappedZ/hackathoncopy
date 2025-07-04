@@ -1,0 +1,7 @@
+.fna .category-carousel {
+  background: linear-gradient(90deg, #f3e8ff 0%, #fbcfe8 100%);
+  border-radius: 18px;
+  border: 2.5px solid #a21caf;
+  box-shadow: 0 8px 32px 0 #a21caf33;
+}
+.fna .category-title { color: #be185d; }

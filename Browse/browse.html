@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Browse - Scale Up</title>
+  <!-- Custom navigation bar CSS -->
+  <link rel="stylesheet" href="navigationtop.css">
+  <style>
+    .user-dropdown .dropdown-menu a:hover { background: #f5f6fa; }
+    body {
+      margin: 0;
+      background: #f5f6fa;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: #111;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #111;
+      margin: 36px 0 32px 0;
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
+    .category-section {
+      margin-bottom: 54px;
+    }
+    .category-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #111;
+      margin: 18px 0 10px 3vw;
+      text-align: left;
+      letter-spacing: 0.01em;
+      line-height: 1.2;
+    }
+    .category-carousel {
+      overflow-x: auto;
+      display: flex;
+      flex-direction: row;
+      gap: 28px;
+      padding: 20px 22px 8px 22px;
+      border-radius: 16px;
+      border: 1.5px solid #d1d5db;
+      background: #fff;
+      box-shadow: 0 4px 18px 0 rgba(60,60,60,0.06);
+      margin: 0 2vw;
+    }
+    .product-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 6px rgba(30,32,42,0.07);
+      min-width: 210px;
+      max-width: 250px;
+      flex: 0 0 210px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      min-height: 160px;
+      scroll-snap-align: start;
+      border: 1px solid #e5e7eb;
+      padding: 16px 18px;
+      cursor: pointer;
+      transition: box-shadow 0.12s;
+    }
+    .product-card:hover {
+      box-shadow: 0 6px 24px #8bb2ec46;
+      border-color: #b3cfff;
+    }
+    .product-card img {
+      width: 74px;
+      height: 74px;
+      object-fit: cover;
+      border-radius: 7px;
+      margin-bottom: 13px;
+      background: #f5f6fa;
+      border: 1px solid #e5e7eb;
+      display: block;
+    }
+    .product-title {
+      font-size: 1.09rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #222;
+      text-align: left;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .product-desc {
+      font-size: 0.98rem;
+      color: #444;
+      text-align: left;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    /* Modal Styling */
+    #ownerModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(50,50,70,0.32);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+    #ownerModalCard {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 40px #2233ac33;
+      max-width: 340px;
+      width: 95vw;
+      padding: 30px 30px 22px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      animation: fadeIn .21s;
+    }
+    #ownerModalClose {
+      position: absolute;
+      top: 10px; right: 12px;
+      border: none;
+      background: none;
+      font-size: 1.8em;
+      color: #bbb;
+      cursor: pointer;
+      z-index: 2;
+    }
+    #ownerModalPfp {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e3eafc;
+      background: #f6faff;
+      margin-bottom: 8px;
+    }
+    .owner-modal-label {
+      font-weight: 600;
+      color: #31418a;
+      margin-right: 3px;
+    }
+    .owner-modal-row {
+      margin-bottom: 4px;
+      font-size: 1em;
+      color: #444;
+      width: 100%;
+      text-align: left;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(22px);}
+      to   { opacity: 1; transform: none;}
+    }
+    @media (max-width: 700px) {
+      h1 { font-size: 1.45rem; }
+      .category-title { font-size: 1.13rem; }
+      .category-carousel { gap: 12px; padding: 10px 4vw 6px 4vw; }
+      .product-card { min-width: 130px; max-width: 88vw; padding: 9px 4vw; }
+      #ownerModalCard { max-width: 94vw; padding: 17px 7vw 15px 7vw;}
+    }
+  </style>
+</head>
+<body>
+<!-- Navigation Bar Example (customize as needed) -->
+<nav class="nav-top">
+  <a href="index.html" class="nav-logo">Scale Up</a>
+  <div class="nav-links">
+    <a href="browse.html" class="nav-link active">Browse</a>
+    <a href="about.html" class="nav-link">About</a>
+    <a href="contact.html" class="nav-link">Contact</a>
+  </div>
+  <div class="nav-user" id="navUserBox">
+    <img src="https://via.placeholder.com/34" class="nav-avatar" id="navAvatar" alt="User" style="display:none;" />
+    <button class="nav-btn" id="signInBtn">Sign In</button>
+    <div class="user-dropdown" id="userDropdown" style="display:none;position:relative;">
+      <button class="dropdown-toggle" id="userDropdownBtn" style="background:none;border:none;cursor:pointer;padding:0;">
+        <span id="userNameSpan" style="font-weight:600;"></span> ▼
+      </button>
+      <div class="dropdown-menu" id="dropdownMenu" style="display:none;position:absolute;right:0;top:100%;background:#fff;color:#222;box-shadow:0 4px 16px #2222;border-radius:8px;min-width:140px;z-index:10;">
+        <a href="../Settings/Setting.html" style="display:block;padding:10px 18px;text-decoration:none;color:#222;">Account Settings</a>
+        <a href="#" id="signOutBtn" style="display:block;padding:10px 18px;text-decoration:none;color:#c0392b;">Sign Out</a>
+      </div>
+    </div>
+  </div>
+  <form class="search-bar" id="browseSearchForm" autocomplete="off" onsubmit="return false;">
+    <input type="text" id="searchInput" placeholder="Search businesses, products, or keywords..." />
+    <button class="search-icon-btn" id="searchBtn" aria-label="Search">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <circle cx="10" cy="10" r="7" stroke="#222" stroke-width="2"/>
+        <line x1="15.293" y1="15.707" x2="20" y2="20" stroke="#222" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </form>
+</nav>
+
+<h1>Browse Categories</h1>
+<div id="all-categories"></div>
+
+<!-- Modal for owner profile -->
+<div id="ownerModal">
+  <div id="ownerModalCard">
+    <button id="ownerModalClose">&times;</button>
+    <img id="ownerModalPfp" src="" alt="Profile Picture" />
+    <div class="owner-modal-row"><span class="owner-modal-label">Business Name:</span> <span id="ownerModalBusiness">-</span></div>
+    <div class="owner-modal-row"><span class="owner-modal-label">Name:</span> <span id="ownerModalName">-</span></div>
+    <div class="owner-modal-row"><span class="owner-modal-label">Email:</span> <span id="ownerModalEmail">-</span></div>
+    <div class="owner-modal-row"><span class="owner-modal-label">Number:</span> <span id="ownerModalNumber">-</span></div>
+    <div class="owner-modal-row"><span class="owner-modal-label">Main Category:</span> <span id="ownerModalMainCategory">-</span></div>
+    <div class="owner-modal-row"><span class="owner-modal-label">Product:</span> <span id="ownerModalProduct">-</span></div>
+    <div class="owner-modal-row"><span class="owner-modal-label">Funding Usage:</span> <span id="ownerModalUsage">-</span></div>
+    <div style="width:100%;margin:12px 0 12px 0;">
+      <div style="color:#3f3f3f;font-size:.93em;margin-bottom:3px;">Funding Progress</div>
+      <div style="background:#e3eafc;border-radius:7px;width:100%;height:13px;overflow:hidden;">
+        <div id="ownerModalFundingBar" style="background:linear-gradient(90deg,#2abbfa,#41e3b5);height:100%;width:0%;transition:width 0.5s;"></div>
+      </div>
+      <div style="font-size:.98em;margin-top:3px;">
+        <span id="ownerModalFundingRaised">₱0</span> / <span id="ownerModalFundingGoal">₱0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDKs (version 8 - Realtime Database) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script>
+window.onload = function() {
+  // ----------- Firebase Config -----------
+  const firebaseConfig = {
+    apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+    authDomain: "iot-web-58054.firebaseapp.com",
+    databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "iot-web-58054",
+    storageBucket: "iot-web-58054.appspot.com",
+    messagingSenderId: "949884902967",
+    appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+    measurementId: "G-5C79490N66"
+  };
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // ----------- Modal Logic -----------
+  const ownerModal = document.getElementById("ownerModal");
+  const ownerModalClose = document.getElementById("ownerModalClose");
+  ownerModalClose.onclick = () => ownerModal.style.display = "none";
+  ownerModal.onclick = (e) => { if(e.target === ownerModal) ownerModal.style.display = "none"; };
+
+  function showOwnerModal(ownerData) {
+    document.getElementById("ownerModalPfp").src = ownerData.pfpurl || "https://ui-avatars.com/api/?name=User&background=dae6ff&color=3d4ba3";
+    document.getElementById("ownerModalBusiness").textContent = ownerData.businessName || "-";
+    document.getElementById("ownerModalName").textContent = ownerData.name || "-";
+    document.getElementById("ownerModalEmail").textContent = ownerData.email || "-";
+    document.getElementById("ownerModalNumber").textContent = ownerData.number || "-";
+    document.getElementById("ownerModalMainCategory").textContent = ownerData.mainCategory || "-";
+    document.getElementById("ownerModalProduct").textContent = ownerData.product || "-";
+    document.getElementById("ownerModalUsage").textContent = ownerData.fundUsage || "-";
+    // Funding
+    let fundingGoal = ownerData.fundingGoal ? Number(ownerData.fundingGoal) : 0;
+    document.getElementById("ownerModalFundingRaised").textContent = "₱0";
+    document.getElementById("ownerModalFundingGoal").textContent = "₱" + (fundingGoal ? fundingGoal.toLocaleString() : "0");
+    document.getElementById("ownerModalFundingBar").style.width = "0%";
+    ownerModal.style.display = "flex";
+  }
+
+  function addProductCardModalListeners() {
+    document.querySelectorAll('.product-card').forEach(card => {
+      // Use mouseenter for hover, click for mobile
+      card.addEventListener('mouseenter', handleOwnerModalEvent);
+      card.addEventListener('click', handleOwnerModalEvent);
+    });
+  }
+
+  async function handleOwnerModalEvent(e) {
+    // Prevent duplicate modal
+    if (ownerModal.style.display === "flex") return;
+    const card = e.currentTarget;
+    // Try to get accountNum from the allProductsCache
+    const ownerName = card.querySelector('.product-title').textContent.trim();
+    // Find the product in the global products cache by product name (or better: assign data-accountnum)
+    let accountNum = card.getAttribute('data-accountnum');
+    if (!accountNum && window.allProductsCache) {
+      let prod = window.allProductsCache.find(p => (p.productName || '') === ownerName);
+      if (prod && prod.accountNum) accountNum = prod.accountNum;
+    }
+    if (!accountNum) return;
+    // Fetch owner details from /users/{accountNum}
+    const userSnap = await firebase.database().ref("users/" + accountNum).once("value");
+    const ownerData = userSnap.val() || {};
+    showOwnerModal(ownerData);
+  }
+
+  // ----------- Auth UI Logic ----------- (same as your original)
+  const signInBtn = document.getElementById('signInBtn');
+  const navAvatar = document.getElementById('navAvatar');
+  const userDropdown = document.getElementById('userDropdown');
+  const userDropdownBtn = document.getElementById('userDropdownBtn');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+  const userNameSpan = document.getElementById('userNameSpan');
+  const signOutBtn = document.getElementById('signOutBtn');
+
+  if(userDropdownBtn && dropdownMenu) {
+    userDropdownBtn.onclick = function(e) {
+      e.stopPropagation();
+      dropdownMenu.style.display = dropdownMenu.style.display === "block" ? "none" : "block";
+    };
+    document.addEventListener('click', function() {
+      dropdownMenu.style.display = "none";
+    });
+  }
+  if(signOutBtn) {
+    signOutBtn.onclick = function(e) {
+      e.preventDefault();
+      firebase.auth().signOut();
+    };
+  }
+  if(signInBtn){
+    signInBtn.onclick = function() {
+      window.location.href = "../../../Drafts/login.html";
+    };
+  }
+  if(typeof firebase.auth === "function") {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if(user) {
+        signInBtn.style.display = "none";
+        navAvatar.style.display = "inline-block";
+        userDropdown.style.display = "inline-block";
+        userNameSpan.textContent = user.displayName || user.email || "Account";
+        db.ref("users/" + user.uid + "/pfpurl").once("value").then(function(snapshot) {
+          const pfpurl = snapshot.val();
+          navAvatar.src = pfpurl || user.photoURL || "https://via.placeholder.com/34";
+        }).catch(function() {
+          navAvatar.src = user.photoURL || "https://via.placeholder.com/34";
+        });
+      } else {
+        signInBtn.style.display = "inline-block";
+        navAvatar.style.display = "none";
+        userDropdown.style.display = "none";
+        dropdownMenu.style.display = "none";
+      }
+    });
+  }
+
+  // ----------- Products Logic ----------- //
+  window.allProductsCache = [];
+
+  async function getAllProductsFromProductsNode() {
+    const snap = await db.ref("products").once("value");
+    const allProducts = [];
+    const obj = snap.val() || {};
+    Object.entries(obj).forEach(([accountNum, prodGroup]) => {
+      Object.entries(prodGroup || {}).forEach(([prodId, prod]) => {
+        allProducts.push({
+          ...prod,
+          prodId,
+          accountNum
+        });
+      });
+    });
+    return allProducts;
+  }
+
+  function groupProductsByCategory(products) {
+    const grouped = {};
+    products.forEach(prod => {
+      const cat = prod.productCategory || "Other";
+      if (!grouped[cat]) grouped[cat] = [];
+      grouped[cat].push(prod);
+    });
+    return grouped;
+  }
+
+  function renderGroupedProducts(products) {
+    const container = document.getElementById('all-categories');
+    container.innerHTML = '';
+    const grouped = groupProductsByCategory(products);
+
+    const categories = Object.keys(grouped).sort();
+    if (!categories.length) {
+      container.innerHTML = `<div style="text-align:center;color:#aaa;font-style:italic;margin:50px 0;">No products found.</div>`;
+      return;
+    }
+
+    categories.forEach(cat => {
+      let html = `<section class="category-section">
+        <div class="category-title">${cat}</div>
+        <div class="category-carousel">`;
+      grouped[cat].forEach(prod => {
+        html += `
+          <div class="product-card" data-accountnum="${prod.accountNum}">
+            <img src="${prod.imageUrl || 'https://via.placeholder.com/80'}" alt="${prod.productName || ''}">
+            <div class="product-title">${prod.productName || ''}</div>
+            <div class="product-desc">${prod.productDesc || ''}</div>
+            <div style="color:#555;font-size:0.95em;margin:3px 0 0 0;">
+              <b>Owner:</b> ${prod.userName || prod.userId || ''}
+            </div>
+            <div style="color:#888;font-size:0.92em;">Subcategory: ${prod.productSubcategory || ''}</div>
+          </div>
+        `;
+      });
+      html += `</div></section>`;
+      container.innerHTML += html;
+    });
+
+    addProductCardModalListeners();
+  }
+
+  function filterProducts(products, searchTerm) {
+    if (!searchTerm) return products;
+    const term = searchTerm.trim().toLowerCase();
+    return products.filter(prod =>
+      (prod.productName || '').toLowerCase().includes(term) ||
+      (prod.productDesc || '').toLowerCase().includes(term) ||
+      (prod.userName || '').toLowerCase().includes(term) ||
+      (prod.productCategory || '').toLowerCase().includes(term) ||
+      (prod.productSubcategory || '').toLowerCase().includes(term)
+    );
+  }
+
+  async function loadAndRenderProducts(searchTerm = "") {
+    if (!window.allProductsCache.length) {
+      window.allProductsCache = await getAllProductsFromProductsNode();
+    }
+    const filtered = filterProducts(window.allProductsCache, searchTerm);
+    renderGroupedProducts(filtered);
+  }
+
+  document.getElementById('searchBtn').onclick = function(e) {
+    e.preventDefault();
+    const val = document.getElementById('searchInput').value;
+    loadAndRenderProducts(val);
+  };
+  document.getElementById('searchInput').addEventListener("keypress", function(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      document.getElementById('searchBtn').onclick();
+    }
+  });
+
+  window.allProductsCache = [];
+  loadAndRenderProducts('');
+};
+</script>
+</body>
+</html>

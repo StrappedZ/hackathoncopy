@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="theme.css">
+  <meta charset="UTF-8" />
+  <title>ScaleUp - How It Works</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inder&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      font-family: 'Inder', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      overflow-y: auto;
+    }
+    .container {
+      max-width: 900px;
+      width: 90%;
+      margin-top: 4vh;
+      padding: 2vh 2vw;
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+    }
+    .title {
+      font-size: 4vw;
+      text-align: center;
+      margin-bottom: 3vh;
+      letter-spacing: 0.1em;
+      color: #000;
+    }
+    .section {
+      margin-bottom: 2vh;
+      font-size: 1.8vw;
+      line-height: 1.5;
+      color: #333;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #f21515;
+    }
+    .button {
+      display: block;
+      margin: 4vh auto 2vh auto;
+      background-color: rgba(255, 160, 122, 0.96);
+      color: #f21515;
+      font-size: 2vw;
+      padding: 1.5vh 3vw;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+    .button:hover {
+      background-color: rgba(255, 160, 122, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title">How It Works</div>
+    <div class="section">
+      ScaleUp helps micro-entrepreneurs like you get the capital you need to scale. It’s simple to start your journey!
+    </div>
+    <div class="section highlight">Grow Your Business, With Our Community!</div>
+    <div class="section"><strong>STEP 1:</strong> Share Your Product<br>
+      Visit a ScaleUp Kiosk. Submit a sample of your best product and tell us your business name and what you need funding for. It’s quick and easy!
+    </div>
+    <div class="section"><strong>STEP 2:</strong> We Launch Your Campaign Online<br>
+      Our team takes professional photos of your product and creates a compelling story for your online campaign page on our website.
+    </div>
+    <div class="section"><strong>STEP 3:</strong> Get Support from Our Community<br>
+      People browse our website, see your amazing product at the kiosks, and choose to support your business! They can donate, or pre-order your products.
+    </div>
+    <div class="section"><strong>STEP 4:</strong> Get Your Capital & Scale Smarter!<br>
+      Once your goal is reached, you receive the capital! Use it to buy materials, upgrade equipment, or expand your reach. ScaleUp helps you grow!
+    </div>
+    <div class="section highlight">
+      Ready to Grow?<br>
+      Join ScaleUp today and let’s make your business dream a reality!
+    </div>
+    <button class="button" onclick="window.location.href='kiosk.html#start'">Start My Journey Now!</button>
+  </div>
+  <!-- Back button with new implementation -->
+  <div class="back-chevron" onclick="window.location.href='screen2.html#back'">
+  <svg class="back-icon" viewBox="0 0 32 32" width="1em" height="1em" aria-hidden="true" focusable="false">
+    <polyline points="20,8 12,16 20,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</div>
+</body>
+</html>

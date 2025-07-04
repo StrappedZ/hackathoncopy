@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Your Scale Up Account</title>
+  <link rel="stylesheet" href="create-account-input-panel-style/create-account-form.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+  </script>
+</head>
+<body>
+  <main class="create-account-center-main">
+    <div class="create-account-card">
+      <div class="create-account-form-header">
+        <img class="create-account-logo" src="https://via.placeholder.com/36x36?text=Logo" alt="Logo Placeholder" />
+        <span class="create-account-form-title">Create Your Scale Up Account</span>
+      </div>
+      <form class="create-account-form" autocomplete="off" id="createAccountForm">
+        <label for="name" class="create-account-label">Name</label>
+        <input type="text" id="name" name="name" class="create-account-input" placeholder="Enter your name" required>
+
+        <label for="email" class="create-account-label">Email</label>
+        <input type="email" id="email" name="email" class="create-account-input" placeholder="Enter your email" required>
+
+        <label for="number" class="create-account-label">Number</label>
+        <input type="tel" id="number" name="number" class="create-account-input" placeholder="Enter your phone number" maxlength="11" pattern="09[0-9]{9}">
+
+        <label for="password" class="create-account-label">Password <span style="font-weight:400;font-size:.92em">(6+ chars, 1 capital, 1 special)</span></label>
+        <div class="password-field-wrapper">
+          <input type="password" id="password" name="password" class="create-account-input" placeholder="Create a password" required>
+          <button type="button" class="view-password-btn" aria-label="Show password" tabindex="-1" onclick="togglePassword()">
+            <svg class="view-password-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#7b7b7b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="12" rx="8" ry="5"></ellipse>
+              <circle cx="12" cy="12" r="2.2"></circle>
+            </svg>
+          </button>
+        </div>
+        <button type="submit" class="create-account-btn-primary">Proceed</button>
+      </form>
+    </div>
+  </main>
+  <script>
+    // Show/Hide password function
+    function togglePassword() {
+      const input = document.getElementById('password');
+      const btn = document.querySelector('.view-password-btn');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.setAttribute('aria-label', 'Hide password');
+      } else {
+        input.type = 'password';
+        btn.setAttribute('aria-label', 'Show password');
+      }
+    }
+
+    // Only allow digits and limit to 11, auto-fix on input
+    document.getElementById("number").addEventListener("input", function() {
+      this.value = this.value.replace(/\D/g, "").slice(0, 11);
+    });
+
+    // Password validation: at least 6 chars, 1 uppercase, 1 special char (e.g., @)
+    function isValidPassword(pw) {
+      return (
+        pw.length >= 6 &&
+        /[A-Z]/.test(pw) &&
+        /[^A-Za-z0-9]/.test(pw) // Special character required
+      );
+    }
+
+    // Account number generator (10 digits, always unique per user)
+    function generateAccountNumber() {
+      // Use current time and a random 4-digit number for high uniqueness
+      const now = Date.now().toString().slice(-6);
+      const rand = Math.floor(1000 + Math.random() * 9000).toString();
+      return now + rand;
+    }
+
+    // Form submit handler
+    document.getElementById("createAccountForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const number = document.getElementById("number").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!name || !email || !number || !password) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Incomplete',
+          text: 'Please fill in all fields.',
+          confirmButtonColor: '#2196f3'
+        });
+        return;
+      }
+      // Validate: 11 digits, must start with 09
+      if (!/^09\d{9}$/.test(number)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Cellphone',
+          text: 'Not a valid cellphone number. It should start with 09 and be 11 digits.',
+          confirmButtonColor: '#2196f3'
+        });
+        return;
+      }
+      // Password validation
+      if (!isValidPassword(password)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Weak Password',
+          text: 'Password must be at least 6 characters, contain at least one uppercase letter, and one special character (like @, #, $, etc).',
+          confirmButtonColor: '#2196f3'
+        });
+        return;
+      }
+
+      // Generate account number and verification status
+      const accountNumber = generateAccountNumber();
+      const verified = false;
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const userId = userCredential.user.uid;
+          // SAVE UID TO LOCALSTORAGE FOR PRINTING PAGE
+          localStorage.setItem('registeredUID', userId);
+          return database.ref("users/" + userId).set({
+            name,
+            email,
+            number,
+            accountNumber,
+            verified,
+             pfpurl: "https://firebasestorage.googleapis.com/v0/b/iot-web-58054.firebasestorage.app/o/pfp%2Fdefault.png?alt=media&token=5626551d-e7cf-45f6-9b23-f52ede3f55a1"
+          });
+        })
+        .then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Account Created!',
+            text: 'Great!! Let`s go proceed to the next step!!',
+            confirmButtonColor: '#2196f3'
+          }).then(() => {
+            window.location.href = "business-info-input-panel.html";
+          });
+        })
+        .catch(error => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message,
+            confirmButtonColor: '#e53935'
+          });
+        });
+    });
+  </script>
+</body>
+</html>

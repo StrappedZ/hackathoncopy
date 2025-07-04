@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="theme.css">
+  <meta charset="UTF-8" />
+  <title>Go Invest Kiosk - Create Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inder&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Kiosk Css/screen4.css">
+
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDZsj-cL_T_BuLtAz5bkqsw-edZXnumwe0",
+      authDomain: "iot-web-58054.firebaseapp.com",
+      databaseURL: "https://iot-web-58054-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "iot-web-58054",
+      storageBucket: "iot-web-58054.appspot.com",
+      messagingSenderId: "949884902967",
+      appId: "1:949884902967:web:6e7f78c7cd0fa1484629b2",
+      measurementId: "G-5C79490N66"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="title">Create Your ScaleUp Account</div>
+    <input type="text" class="input-field" placeholder="Name" id="name" required>
+    <input type="email" class="input-field" placeholder="Email" id="email" required>
+    <input
+      type="tel"
+      class="input-field"
+      placeholder="Number"
+      id="number"
+      required
+      pattern="[0-9]*"
+      inputmode="numeric"
+      maxlength="11"
+    />
+    <input type="password" class="input-field" placeholder="Password" id="password" required>
+    <button class="signup-button" id="signUp">Sign Up</button>
+  </div>
+  <div class="back-chevron" id="backChevron" aria-label="Go Back">
+    <svg class="back-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <polyline points="20,8 12,16 20,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <script>
+    // only allow digits, max 11
+    const numberField = document.getElementById("number");
+    numberField.addEventListener("input", function() {
+      this.value = this.value.replace(/\D/g, "").slice(0,11);
+    });
+
+    document.getElementById("signUp").addEventListener("click", function() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const number = document.getElementById("number").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!name || !email || !number || !password) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      // validate 11 digits, must start with 09
+      if (!/^09\d{9}$/.test(number)) {
+        alert("Not a valid cellphone number");
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCredential => {
+          const userId = userCredential.user.uid;
+          return database.ref("users/" + userId).set({
+            name,
+            email,
+            number
+          });
+        })
+        .then(() => {
+          alert("✅ Account created successfully!");
+          window.location.href = "screen5.html";
+        })
+        .catch(error => {
+          alert("❌ " + error.message);
+        });
+    });
+
+    document.getElementById("backChevron").addEventListener("click", function() {
+      window.location.href = "screen2.html";
+    });
+  </script>
+</body>
+</html>

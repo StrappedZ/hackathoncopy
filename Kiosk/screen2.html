@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="theme.css">
+  <meta charset="UTF-8" />
+  <title>Go Invest Kiosk - Screen 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=IM+FELL+Great+Primer&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="Kiosk Css/screen2.css">
+ 
+</head>
+<body>
+  <div class="container">
+    <div class="welcome">Welcome to ScaleUp</div>
+    <div class="button" id="createAccount">Create My Account</div>
+    <div class="button" id="existingAccount">I Already Have an Account</div>
+  </div>
+  <div class="back-chevron" id="backChevron" aria-label="Go Back">
+    <!-- SVG for perfectly centered, bold chevron -->
+    <svg class="back-icon" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <polyline points="20,8 12,16 20,24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="how-it-works" id="howItWorks">How It Works</div>
+
+  <script>
+    document.getElementById("createAccount").addEventListener("click", function() {
+      window.location.href = "screen4.html";
+    });
+    document.getElementById("existingAccount").addEventListener("click", function() {
+      window.location.href = "screen3.html";
+    });
+    document.getElementById("howItWorks").addEventListener("click", function() {
+      window.location.href = "HIW.html";
+    });
+    document.getElementById("backChevron").addEventListener("click", function() {
+      window.location.href = "kiosk.html";
+    });
+  </script>
+</body>
+</html>
